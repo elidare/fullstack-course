@@ -35,17 +35,11 @@ const App = () => {
     setNewNumber('')
   }
 
-  const handleNameChange = (event) => {
-    setNewName(event.target.value)
-  }
+  const handleNameChange = (event) => setNewName(event.target.value)
 
-  const handleNumberChange = (event) => {
-    setNewNumber(event.target.value)
-  }
+  const handleNumberChange = (event) => setNewNumber(event.target.value)
 
-  const handleFilteredNameChange = (event) => {
-    setFilteredName(event.target.value)
-  }
+  const handleFilteredNameChange = (event) => setFilteredName(event.target.value)
 
   return (
     <div>
