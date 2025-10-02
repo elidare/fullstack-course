@@ -3,12 +3,14 @@ import Input from './components/Input'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filteredName, setFilteredName] = useState('')
+  const [notification, setNotification] = useState({ message: null, type: null })
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -36,6 +38,7 @@ const App = () => {
         setPersons(persons.map((person) => person.id !== returnedPerson.id ? person : returnedPerson))
         setNewName('')
         setNewNumber('')
+        showMessage(`${newName} was updated.`, 'success')
       })
       return
     }
@@ -49,6 +52,7 @@ const App = () => {
       setPersons(persons.concat(returnedPerson))
       setNewName('')
       setNewNumber('')
+      showMessage(`${newName} was added to phonebook.`, 'success')
     })
   }
 
@@ -57,9 +61,15 @@ const App = () => {
 
     if (!confirm(`Delete ${person.name}?`)) return
 
-    personService.deletePerson(id).then(() => {
-      setPersons(persons.filter((p) => p.id !== id))
-    })
+    personService
+      .deletePerson(id)
+      .then(() => {
+        setPersons(persons.filter((p) => p.id !== id))
+        showMessage(`${person.name} was deleted from phonebook.`, 'success')
+      })
+      .catch((error) => {
+        showMessage(`${person.name} was already deleted from phonebook.`, 'error')
+      })
   }
 
   const handleNameChange = (event) => setNewName(event.target.value)
@@ -68,9 +78,20 @@ const App = () => {
 
   const handleFilteredNameChange = (event) => setFilteredName(event.target.value)
 
+  const showMessage = (message, type) => {
+    setNotification({
+      message: message,
+      type: type
+    })
+    setTimeout(() => {
+        setNotification({ message: null, type: null })
+    }, 5000)
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification.message} type={notification.type} />
       <Input name="Filter name:" value={filteredName} onChange={handleFilteredNameChange} />
       <h2>Add new</h2>
       <PersonForm
