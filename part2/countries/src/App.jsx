@@ -16,10 +16,20 @@ const Country = (props) => {
   )
 }
 
+const CountryName = ({ countryName, onClick }) => {
+  return (
+    <p>
+        {countryName}&nbsp;
+        <button onClick={onClick}>Show</button>
+    </p>
+  )
+}
+
 const App = () => {
   const [countries, setCountries] = useState([])
   const [searchCountry, setSearchCountry] = useState('')
   const [filteredCountries, setFilteredCountries] = useState([])
+  const [displayedCountry, setDisplayedCountry] = useState(null)
 
   useEffect(() => {
     countryService.getAll().then((countryList) => {
@@ -28,11 +38,23 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const filtered = countries.filter((country) => country.name.common.toLowerCase().includes(searchCountry))
+    const filtered = searchCountry ? 
+      countries.filter((country) => country.name.common.toLowerCase().includes(searchCountry)) :
+      []
     setFilteredCountries(filtered)
   }, [searchCountry])
 
+  useEffect(() => {
+    setDisplayedCountry(filteredCountries.length === 1 ? filteredCountries[0] : null)
+  }, [filteredCountries])
+
   const changeSearchCountry = (event) => setSearchCountry(event.target.value)
+
+  const showCountry = (countryName) => {
+    setFilteredCountries(
+      filteredCountries.filter((c) => c.name.common === countryName)
+    )
+  }
 
   return (
     <>
@@ -44,17 +66,22 @@ const App = () => {
         {filteredCountries.length > 10 ?
           'Too many matches, specify another filter' : 
           filteredCountries.length > 1 ?
-          filteredCountries.map((c) => <p key={c.name.official}>{c.name.common}</p>) :
-          filteredCountries.length === 1 ?
-          <Country
-            countryName={filteredCountries[0].name.common}
-            capital={filteredCountries[0].capital[0]}
-            area={filteredCountries[0].area}
-            languages={Object.values(filteredCountries[0].languages)}
-            flagPicture={filteredCountries[0].flags.svg}
-          /> :
+          filteredCountries.map((c) => <CountryName 
+            key={c.name.official}
+            countryName={c.name.common}
+            onClick={() => showCountry(c.name.common)}
+          />) :
           null
-        } 
+        }
+        {displayedCountry && 
+          <Country
+            countryName={displayedCountry.name.common}
+            capital={displayedCountry.capital[0]}
+            area={displayedCountry.area}
+            languages={Object.values(displayedCountry.languages)}
+            flagPicture={displayedCountry.flags.svg}
+          />
+        }
       </div>
     </>
   )
