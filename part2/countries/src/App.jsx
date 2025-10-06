@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import countryService from './services/countries'
+import weatherService from './services/weather'
 
 const Country = (props) => {
   return (
@@ -12,6 +13,18 @@ const Country = (props) => {
         {props.languages.map((lang) => <li key={lang}>{lang}</li>)}
       </ul>
       <img src={props.flagPicture} alt={`"Flag of ${props.countryName}`} width="150"/>
+      <h2>Weather in {props.capital}</h2>
+    </div>
+  )
+}
+
+const Weather = (props) => {
+  // Wind is in kph, so make it mps
+  return (
+    <div>
+      <p>Temperature: {props.temp} Celsius</p>
+      <img src={props.picture} alt={`"Weather condition: ${props.condition}`} width="50"/>
+      <p>Wind: {(props.wind / 3.6).toFixed(2)} mps</p>
     </div>
   )
 }
@@ -30,12 +43,21 @@ const App = () => {
   const [searchCountry, setSearchCountry] = useState('')
   const [filteredCountries, setFilteredCountries] = useState([])
   const [displayedCountry, setDisplayedCountry] = useState(null)
+  const [currentWeather, setCurrentWeather] = useState(null)
 
   useEffect(() => {
     countryService.getAll().then((countryList) => {
       setCountries(countryList)
     })
   }, [])
+
+  useEffect(() => {
+    if (displayedCountry) {
+      weatherService.getWeather(displayedCountry.capital[0]).then((weather) => {
+        setCurrentWeather(weather)
+      })
+    }
+  }, [displayedCountry])
 
   useEffect(() => {
     const filtered = searchCountry ? 
@@ -80,6 +102,14 @@ const App = () => {
             area={displayedCountry.area}
             languages={Object.values(displayedCountry.languages)}
             flagPicture={displayedCountry.flags.svg}
+          />
+        }
+        {displayedCountry && currentWeather &&
+          <Weather 
+            temp={currentWeather.temp_c}
+            picture={currentWeather.condition.icon}
+            condition={currentWeather.condition.text}
+            wind={currentWeather.wind_kph}
           />
         }
       </div>
