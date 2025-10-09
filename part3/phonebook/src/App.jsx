@@ -34,12 +34,17 @@ const App = () => {
         ...person,
         number: newNumber,
       }
-      personService.update(person.id, updatedPerson).then((returnedPerson) => {
-        setPersons(persons.map((person) => person.id !== returnedPerson.id ? person : returnedPerson))
-        setNewName('')
-        setNewNumber('')
-        showMessage(`${newName} was updated.`, 'success')
-      })
+      personService
+        .update(person.id, updatedPerson)
+        .then((returnedPerson) => {
+          setPersons(persons.map((person) => person.id !== returnedPerson.id ? person : returnedPerson))
+          setNewName('')
+          setNewNumber('')
+          showMessage(`${newName} was updated.`, 'success')
+        })
+        .catch(error => {
+          showMessage(`${error.response.data.error}`, 'error')
+        })
       return
     }
 
@@ -48,12 +53,17 @@ const App = () => {
       number: newNumber,
     }
 
-    personService.create(newPerson).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson))
-      setNewName('')
-      setNewNumber('')
-      showMessage(`${newName} was added to phonebook.`, 'success')
-    })
+    personService
+      .create(newPerson)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+        showMessage(`${newName} was added to phonebook.`, 'success')
+      })
+      .catch(error => {
+        showMessage(`${error.response.data.error}`, 'error')
+      })
   }
 
   const deletePerson = (id) => {
