@@ -41,12 +41,6 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    // if (persons.find(person => person.name.toLowerCase() === body.name.toLowerCase())) {
-    //   return response.status(400).json({ 
-    //     error: 'Name must be unique' 
-    //   })
-    // }
-
     const person = new Person({
         name: body.name,
         number: body.number,
@@ -85,10 +79,12 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-    response.send(`
-        <p>Phonebook has info about ${persons.length} people</p>
-        <p>${new Date()}</p>
-    `)
+    Person.find({}).then(persons => {
+        response.send(`
+            <p>Phonebook has info about ${persons.length} people</p>
+            <p>${new Date()}</p>
+        `)
+    })
 })
 
 const unknownEndpoint = (request, response) => {
