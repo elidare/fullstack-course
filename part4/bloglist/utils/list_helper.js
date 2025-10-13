@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 const dummy = (blogs) => {
   return 1
 }
@@ -19,8 +21,16 @@ const favoriteBlog = (blogList) => {
   return blogList.reduce(reducer, {})
 }
 
+const mostBlogs = (blogList) => {
+  // https://stackoverflow.com/questions/27376295/getting-key-with-the-highest-value-from-object
+  const most = _.countBy(blogList, 'author')
+  const maxAuthor = _.maxBy(_.keys(most), (o) => most[o])
+  return maxAuthor ? { author: maxAuthor, blogs: most[maxAuthor] } : {}
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
+  mostBlogs,
 }

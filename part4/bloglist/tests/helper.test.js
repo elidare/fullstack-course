@@ -100,3 +100,21 @@ describe('Maximum likes', () => {
     assert.deepStrictEqual(listHelper.favoriteBlog(listWithManyBlogs), listWithManyBlogs[2])
   })
 })
+
+describe('Maximum blogs', () => {
+  test('of empty list is empty object', () => {
+    const result = {}
+    assert.deepStrictEqual(listHelper.mostBlogs(emptyList), result)
+  })
+
+  test('when list has only one blog return this author and 1 blog', () => {
+    const result = { author: 'Edsger W. Dijkstra', blogs: 1 }
+    assert.deepStrictEqual(listHelper.mostBlogs(listWithOneBlog), result)
+  })
+
+  test('of a bigger list returns the author with max blogs', () => {
+    const result = { author: 'Robert C. Martin', blogs: 3 }
+    assert.deepStrictEqual(listHelper.mostBlogs(listWithManyBlogs), result)
+  })
+})
+
