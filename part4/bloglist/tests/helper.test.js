@@ -61,7 +61,7 @@ const listWithManyBlogs = [
       title: "Type wars",
       author: "Robert C. Martin",
       url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
-      likes: 12,
+      likes: 2,
       __v: 0
   }
 ]
@@ -83,7 +83,7 @@ describe('Total likes', () => {
   })
 
   test('of a bigger list is calculated right', () => {
-    assert.strictEqual(listHelper.totalLikes(listWithManyBlogs), 46)
+    assert.strictEqual(listHelper.totalLikes(listWithManyBlogs), 36)
   })
 })
 
@@ -118,3 +118,19 @@ describe('Maximum blogs', () => {
   })
 })
 
+describe('Maximum likes', () => {
+  test('of empty list is empty object', () => {
+    const result = {}
+    assert.deepStrictEqual(listHelper.mostLikes(emptyList), result)
+  })
+
+  test('when list has only one blog return this author and number of likes', () => {
+    const result = { author: 'Edsger W. Dijkstra', likes: 5 }
+    assert.deepStrictEqual(listHelper.mostLikes(listWithOneBlog), result)
+  })
+
+  test('of a bigger list returns the author with max likes', () => {
+    const result = { author: 'Edsger W. Dijkstra', likes: 17 }
+    assert.deepStrictEqual(listHelper.mostLikes(listWithManyBlogs), result)
+  })
+})
