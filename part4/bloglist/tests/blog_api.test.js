@@ -30,7 +30,7 @@ beforeEach(async () => {
   await blogObject.save()
 })
 
-describe('Blogs api:', () => {
+describe('Blogs api get', () => {
   test('Blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
@@ -49,6 +49,31 @@ describe('Blogs api:', () => {
 
     assert.ok(response.body[0].id)
     assert.ok(!response.body[0]._id)
+  })
+})
+
+describe('Blogs api post', () => {
+  test('New blog is created', async () => {
+    const newBlog = {
+      title: 'Canonical string reduction',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+      likes: 12
+    }
+    
+    // Save new blog
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+
+    const response = await api.get('/api/blogs')
+    const { title, author, url, likes } = response.body[2]
+
+    assert.strictEqual(response.body.length, initialBlogs.length + 1)
+    assert.strictEqual(title, newBlog.title)
+    assert.strictEqual(author, newBlog.author)
+    assert.strictEqual(url, newBlog.url)
+    assert.strictEqual(likes, newBlog.likes)
   })
 })
 
