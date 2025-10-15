@@ -1,5 +1,5 @@
 const assert = require('node:assert')
-const { test, after, beforeEach } = require('node:test')
+const { test, describe, after, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -30,24 +30,26 @@ beforeEach(async () => {
   await blogObject.save()
 })
 
-test('Blogs are returned as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-})
+describe('Blogs api:', () => {
+  test('Blogs are returned as json', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
 
-test('All blogs are returned', async () => {
-  const response = await api.get('/api/blogs')
+  test('All blogs are returned', async () => {
+    const response = await api.get('/api/blogs')
 
-  assert.strictEqual(response.body.length, initialBlogs.length)
-})
+    assert.strictEqual(response.body.length, initialBlogs.length)
+  })
 
-test('A specific blog is within the returned blogs', async () => {
-  const response = await api.get('/api/blogs')
+  test('Identifier is named id', async () => {
+    const response = await api.get('/api/blogs')
 
-  const titles = response.body.map(e => e.title)
-  assert(titles.includes('React patterns'))
+    assert.ok(response.body[0].id)
+    assert.ok(!response.body[0]._id)
+  })
 })
 
 after(async () => {
