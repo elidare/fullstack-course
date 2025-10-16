@@ -60,7 +60,7 @@ describe('Blogs api post', () => {
       url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
       likes: 12
     }
-    
+
     // Save new blog
     await api
       .post('/api/blogs')
@@ -74,6 +74,22 @@ describe('Blogs api post', () => {
     assert.strictEqual(author, newBlog.author)
     assert.strictEqual(url, newBlog.url)
     assert.strictEqual(likes, newBlog.likes)
+  })
+
+  test('If likes is missing, set default', async () => {
+    const newBlog = {
+      title: 'First class tests',
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll'
+    }
+
+    // Save new blog
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+
+    const response = await api.get('/api/blogs')
+    assert.strictEqual(response.body[2].likes, 0)
   })
 })
 
