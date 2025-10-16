@@ -91,6 +91,32 @@ describe('Blogs api post', () => {
     const response = await api.get('/api/blogs')
     assert.strictEqual(response.body[2].likes, 0)
   })
+
+  test('If title is missing, it returns Bad request', async () => {
+    const newBlog = {
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll'
+    }
+
+    // Save new blog
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
+
+  test('If url is missing, it returns Bad request', async () => {
+    const newBlog = {
+      title: 'First class tests',
+      author: 'Robert C. Martin'
+    }
+
+    // Save new blog
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
 })
 
 after(async () => {
