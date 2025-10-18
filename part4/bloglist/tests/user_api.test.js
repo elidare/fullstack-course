@@ -101,13 +101,10 @@ describe('Adding new user', () => {
 
     const currentUsersAtEnd = await helper.usersInDb()
     assert.strictEqual(currentUsersAtEnd.length, helper.initialUsers.length)
-    assert(result.body.error.includes('expected `username` to be unique'))
+    assert(result.body.error.includes('Expected `username` to be unique'))
   })
 })
 
 after(async () => {
   await mongoose.connection.close()
 })
-
-// Get all, Get one
-// Create successfully
