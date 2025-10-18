@@ -27,14 +27,14 @@ beforeEach(async () => {
 describe('Adding new user', () => {
   test('If username is missing, it returns 400 Bad request', async () => {
     const newUser = {
-      password: "pswd"
+      password: 'pswd'
     }
 
     const result = await api
       .post('/api/users')
       .send(newUser)
       .expect(400)
-    
+
     const currentUsers = await helper.usersInDb()
     assert.strictEqual(currentUsers.length, helper.initialUsers.length)
     assert(result.body.error.includes('Path `username` is required'))
@@ -42,15 +42,15 @@ describe('Adding new user', () => {
 
   test('If username is less than minimum, it returns 400 Bad request', async () => {
     const newUser = {
-      username: "t",
-      password: "pswd"
+      username: 't',
+      password: 'pswd'
     }
 
     const result = await api
       .post('/api/users')
       .send(newUser)
       .expect(400)
-    
+
     const currentUsers = await helper.usersInDb()
     assert.strictEqual(currentUsers.length, helper.initialUsers.length)
     assert(result.body.error.includes(`Path \`username\` (\`${newUser.username}\`, length ${newUser.username.length}) is shorter than the minimum allowed length`))
@@ -58,14 +58,14 @@ describe('Adding new user', () => {
 
   test('If password is missing, it returns 400 Bad request', async () => {
     const newUser = {
-      username: "test_user_new"
+      username: 'test_user_new'
     }
 
     const result = await api
       .post('/api/users')
       .send(newUser)
       .expect(400)
-    
+
     const currentUsers = await helper.usersInDb()
     assert.strictEqual(currentUsers.length, helper.initialUsers.length)
     assert(result.body.error.includes('Password is required'))
@@ -73,15 +73,15 @@ describe('Adding new user', () => {
 
   test('If password is less than minimum, it returns 400 Bad request', async () => {
     const newUser = {
-      username: "test_user_new",
-      password: "ps"
+      username: 'test_user_new',
+      password: 'ps'
     }
 
     const result = await api
       .post('/api/users')
       .send(newUser)
       .expect(400)
-    
+
     const currentUsers = await helper.usersInDb()
     assert.strictEqual(currentUsers.length, helper.initialUsers.length)
     assert(result.body.error.includes('Password should be at least 3 characters long'))
@@ -98,7 +98,7 @@ describe('Adding new user', () => {
       .post('/api/users')
       .send(newUser)
       .expect(400)
-    
+
     const currentUsersAtEnd = await helper.usersInDb()
     assert.strictEqual(currentUsersAtEnd.length, helper.initialUsers.length)
     assert(result.body.error.includes('expected `username` to be unique'))

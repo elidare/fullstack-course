@@ -31,14 +31,14 @@ const blogsInDb = async () => {
 
 const initialUsers = [
   {
-    username: "test_user_1",
-    name: "Test User 1",
-    password: "pswd11"
+    username: 'test_user_1',
+    name: 'Test User 1',
+    password: 'pswd11'
   },
   {
-    username: "test_user_2",
-    name: "Test User 2",
-    password: "pswd22"
+    username: 'test_user_2',
+    name: 'Test User 2',
+    password: 'pswd22'
   }
 ]
 
