@@ -12,7 +12,7 @@ const App = () => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [loginVisible, setLoginVisible] = useState(false)
+  const [blogFromVisible, setBlogFromVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -80,17 +80,17 @@ const App = () => {
   )
 
   const blogForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+    const hideWhenVisible = { display: blogFromVisible ? 'none' : '' }
+    const showWhenVisible = { display: blogFromVisible ? '' : 'none' }
 
     return (
     <>
       <div style={hideWhenVisible}>
-        <button onClick={() => setLoginVisible(true)}>Create new blog</button>
+        <button onClick={() => setBlogFromVisible(true)}>Create new blog</button>
       </div>
       <div style={showWhenVisible}>
         <BlogForm handleSubmit={addBlog} />
-        <button onClick={() => setLoginVisible(false)}>Cancel</button>
+        <button onClick={() => setBlogFromVisible(false)}>Cancel</button>
       </div>
     </>
   )}
