@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -13,6 +15,7 @@ const App = () => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -119,46 +122,42 @@ const App = () => {
     </>
   )
 
-  const blogForm = () => (
+  const blogForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
     <>
-      <h2>Create new</h2>
-      <form onSubmit={addBlog}>
-        <label>
-          Title&nbsp;
-          <input 
-            type="text"
-            value={newBlogTitle}
-            onChange={({ target }) => setNewBlogTitle(target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Author&nbsp;
-          <input 
-            type="text"
-            value={newBlogAuthor}
-            onChange={({ target }) => setNewBlogAuthor(target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Url&nbsp;
-          <input
-            type="text"
-            value={newBlogUrl}
-            onChange={({ target }) => setNewBlogUrl(target.value)}
-          />
-        </label>
-        <br />
-        <button type="submit">Create</button>
-      </form>
+      <div style={hideWhenVisible}>
+        <button onClick={() => setLoginVisible(true)}>Create new blog</button>
+      </div>
+      <div style={showWhenVisible}>
+        <BlogForm
+          blogTitle={newBlogTitle}
+          blogAuthor={newBlogAuthor}
+          blogUrl={newBlogUrl}
+          handleBlogTitleChange={({ target }) => setNewBlogTitle(target.value)}
+          handleBlogAuthorChange={({ target }) => setNewBlogAuthor(target.value)}
+          handleBlogUrlChange={({ target }) => setNewBlogUrl(target.value)}
+          handleSubmit={addBlog}
+        />
+        <button onClick={() => setLoginVisible(false)}>Cancel</button>
+      </div>
     </>
-  )
+  )}
 
   return (
     <div>
       <Notification message={notification.message} type={notification.type} />
-      {!user && loginForm()}
+      {!user && (
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        />
+      )}
       {user && (
         <div>
           <p>{user.name} logged in</p>
