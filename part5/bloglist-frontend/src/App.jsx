@@ -8,9 +8,6 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [newBlogTitle, setNewBlogTitle] = useState('')
-  const [newBlogAuthor, setNewBlogAuthor] = useState('')
-  const [newBlogUrl, setNewBlogUrl] = useState('')
   const [notification, setNotification] = useState({ message: null, type: null })
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
@@ -53,22 +50,11 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogsappUser')
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-
+  const addBlog = async (newBlog) => {
     try {
-      const newBlog = {
-        title: newBlogTitle,
-        author: newBlogAuthor,
-        url: newBlogUrl
-      }
       const savedBlog = await blogService.create(newBlog)
       setBlogs(blogs.concat(savedBlog))
-      showMessage(`A new blog ${newBlogTitle} by ${newBlogAuthor} is added`, 'success')
-
-      setNewBlogTitle('')
-      setNewBlogAuthor('')
-      setNewBlogUrl('')
+      showMessage(`A new blog ${newBlog.title} by ${newBlog.author} is added`, 'success')
     } catch {
       showMessage('Something went wrong', 'error')
     }
@@ -83,35 +69,6 @@ const App = () => {
         setNotification({ message: null, type: null })
     }, 5000)
   }
-
-  const loginForm = () => (
-    <>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>
-            Username&nbsp;
-            <input
-              type="text"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Password&nbsp;
-            <input
-              type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">Log in</button>
-      </form>
-    </>
-  )
 
   const blogsList = () => (
     <>
@@ -132,15 +89,7 @@ const App = () => {
         <button onClick={() => setLoginVisible(true)}>Create new blog</button>
       </div>
       <div style={showWhenVisible}>
-        <BlogForm
-          blogTitle={newBlogTitle}
-          blogAuthor={newBlogAuthor}
-          blogUrl={newBlogUrl}
-          handleBlogTitleChange={({ target }) => setNewBlogTitle(target.value)}
-          handleBlogAuthorChange={({ target }) => setNewBlogAuthor(target.value)}
-          handleBlogUrlChange={({ target }) => setNewBlogUrl(target.value)}
-          handleSubmit={addBlog}
-        />
+        <BlogForm handleSubmit={addBlog} />
         <button onClick={() => setLoginVisible(false)}>Cancel</button>
       </div>
     </>
