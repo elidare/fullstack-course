@@ -60,6 +60,18 @@ const App = () => {
     }
   }
 
+  const updateBlog = async(id, updatedBlog) => {
+    try {
+      const savedBlog = await blogService.update(id, updatedBlog)
+      setBlogs(blogs.map(blog =>
+        blog.id === id ? { ...blog, likes: savedBlog.likes } : blog
+      ))
+      showMessage(`A blog ${updatedBlog.title} by ${updatedBlog.author} is updated`, 'success')
+    } catch {
+      showMessage('Something went wrong', 'error')
+    }
+  }
+
   const showMessage = (message, type) => {
     setNotification({
       message: message,
@@ -74,7 +86,7 @@ const App = () => {
     <>
       <h2>Blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
       )}
     </>
   )
