@@ -9,7 +9,7 @@ import loginService from './services/login'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState({ message: null, type: null })
-  const [username, setUsername] = useState('') 
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [blogFromVisible, setBlogFromVisible] = useState(false)
@@ -17,7 +17,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAllBlogs().then(blogs =>
       setBlogs(blogs)
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -31,12 +31,12 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem(
         'loggedBlogsappUser', JSON.stringify(user)
-      ) 
+      )
       setUser(user)
       setUsername('')
       setPassword('')
@@ -78,7 +78,7 @@ const App = () => {
       setBlogs(blogs.filter(blog =>
         blog.id !== id
       ))
-      showMessage(`The blog was deleted`, 'success')
+      showMessage('The blog was deleted', 'success')
     } catch {
       showMessage('Something went wrong', 'error')
     }
@@ -90,7 +90,7 @@ const App = () => {
       type: type
     })
     setTimeout(() => {
-        setNotification({ message: null, type: null })
+      setNotification({ message: null, type: null })
     }, 5000)
   }
 
@@ -108,16 +108,16 @@ const App = () => {
     const showWhenVisible = { display: blogFromVisible ? '' : 'none' }
 
     return (
-    <>
-      <div style={hideWhenVisible}>
-        <button onClick={() => setBlogFromVisible(true)}>Create new blog</button>
-      </div>
-      <div style={showWhenVisible}>
-        <BlogForm handleSubmit={addBlog} />
-        <button onClick={() => setBlogFromVisible(false)}>Cancel</button>
-      </div>
-    </>
-  )}
+      <>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setBlogFromVisible(true)}>Create new blog</button>
+        </div>
+        <div style={showWhenVisible}>
+          <BlogForm handleSubmit={addBlog} />
+          <button onClick={() => setBlogFromVisible(false)}>Cancel</button>
+        </div>
+      </>
+    )}
 
   return (
     <div>

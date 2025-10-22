@@ -25,7 +25,7 @@ const BlogForm = ({ handleSubmit }) => {
       <form onSubmit={submitForm}>
         <label>
           Title&nbsp;
-          <input 
+          <input
             type="text"
             value={newBlogTitle}
             onChange={({ target }) => setNewBlogTitle(target.value)}
@@ -34,7 +34,7 @@ const BlogForm = ({ handleSubmit }) => {
         <br />
         <label>
           Author&nbsp;
-          <input 
+          <input
             type="text"
             value={newBlogAuthor}
             onChange={({ target }) => setNewBlogAuthor(target.value)}
