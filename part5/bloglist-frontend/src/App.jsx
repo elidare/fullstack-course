@@ -15,7 +15,7 @@ const App = () => {
   const [blogFromVisible, setBlogFromVisible] = useState(false)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
+    blogService.getAllBlogs().then(blogs =>
       setBlogs(blogs)
     )  
   }, [])
@@ -52,7 +52,7 @@ const App = () => {
 
   const addBlog = async (newBlog) => {
     try {
-      const savedBlog = await blogService.create(newBlog)
+      const savedBlog = await blogService.createBlog(newBlog)
       setBlogs(blogs.concat(savedBlog))
       showMessage(`A new blog ${newBlog.title} by ${newBlog.author} is added`, 'success')
     } catch {
@@ -60,13 +60,25 @@ const App = () => {
     }
   }
 
-  const updateBlog = async(id, updatedBlog) => {
+  const updateBlog = async (id, updatedBlog) => {
     try {
-      const savedBlog = await blogService.update(id, updatedBlog)
+      const savedBlog = await blogService.updateBlog(id, updatedBlog)
       setBlogs(blogs.map(blog =>
         blog.id === id ? { ...blog, likes: savedBlog.likes } : blog
       ))
       showMessage(`A blog ${updatedBlog.title} by ${updatedBlog.author} is updated`, 'success')
+    } catch {
+      showMessage('Something went wrong', 'error')
+    }
+  }
+
+  const deleteBlog = async (id) => {
+    try {
+      await blogService.deleteBlog(id)
+      setBlogs(blogs.filter(blog =>
+        blog.id !== id
+      ))
+      showMessage(`The blog was deleted`, 'success')
     } catch {
       showMessage('Something went wrong', 'error')
     }
@@ -86,7 +98,7 @@ const App = () => {
     <>
       <h2>Blogs</h2>
       {[...blogs].sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} />
       )}
     </>
   )
