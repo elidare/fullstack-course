@@ -15,7 +15,7 @@ const Notification = ({ message, type }) => {
     : { ...baseStyle, color: 'green', border: '1px solid green', background: '#e5ffe5' }
 
   return (
-    <div style={style}>
+    <div style={style} className={type}>
       {message}
     </div>
   )
