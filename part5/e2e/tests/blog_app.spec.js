@@ -16,6 +16,26 @@ const newBlog = {
   author: 'Blog author',
   url: 'url.url'
 }
+const blogsWithLikes = [
+  {
+    title: 'Title with least likes',
+    author: 'Author 1',
+    url: 'url.url',
+    likes: 1
+  },
+  {
+    title: 'Title with average likes',
+    author: 'Author 2',
+    url: 'url.url',
+    likes: 5
+  },
+  {
+    title: 'Title with most likes',
+    author: 'Author 3',
+    url: 'url.url',
+    likes: 10
+  }
+]
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -107,6 +127,38 @@ describe('Blog app', () => {
       // Check that Delete button is not visible
       await page.getByRole('button', { name: 'View' }).click()
       await expect(page.getByRole('button', { name: 'Delete' })).not.toBeVisible()
+    })
+
+    test('blogs are arranged in the order according to the likes', async ({ page, request }) => {
+      // Get token
+      const response = await request.post('/api/login', {
+        data: {
+          username: testUser1.username,
+          password: testUser1.password
+        }
+      })
+      const loginResponse = await response.json()
+      const token = loginResponse.token
+
+      // Add blogs with likes
+      for (let blog of blogsWithLikes) {
+        await request.post('/api/blogs', {
+          data: blog,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      }
+
+      // Sort blogs by likes to compare later
+      const blogsWithLikesSorted = [...blogsWithLikes].sort((b1, b2) => b2.likes - b1.likes)
+      const summaries = blogsWithLikesSorted.map(blog => `${blog.title} ${blog.author}`)
+
+      // Reload the page to show the blogs
+      await page.reload()
+
+      // Compared test summaries with rendered
+      await expect(page.locator('.blog-summary')).toHaveText(summaries)
     })
   })
 })
