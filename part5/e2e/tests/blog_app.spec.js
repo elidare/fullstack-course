@@ -58,5 +58,21 @@ describe('Blog app', () => {
       const blog = page.getByText(`${newBlog.title} ${newBlog.author}`)
       await expect(blog).toBeVisible()
     })
+
+    test('a blog can be liked', async ({ page }) => {
+      const newBlog = {
+        title: 'New blog',
+        author: 'Blog author',
+        url: 'url.url'
+      }
+
+      await createBlog(page, newBlog)
+      await page.getByRole('button', { name: 'View' }).click()
+      await expect(page.getByText('Likes 0')).toBeVisible();
+
+      await page.getByRole('button', { name: 'Like' }).click()
+
+      await expect(page.getByText('Likes 1')).toBeVisible();
+    })
   })
 })
