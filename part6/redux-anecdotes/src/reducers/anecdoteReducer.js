@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { current } from '@reduxjs/toolkit'
 
 const anecdotesAtStart = [
   'If it hurts, do it more often',
