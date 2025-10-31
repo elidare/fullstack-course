@@ -12,6 +12,15 @@ const AnecdoteForm = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
     },
+    onError: (e) => {
+      notificationDispatch({
+        type: 'SHOW',
+        payload: e.message,
+      })
+      setTimeout(() => {
+        notificationDispatch({ type: 'HIDE' })
+      }, 5000)
+    }
   })
 
   const onCreate = (event) => {
