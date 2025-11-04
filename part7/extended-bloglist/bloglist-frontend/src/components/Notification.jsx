@@ -1,7 +1,8 @@
-const Notification = ({ message, type }) => {
-  if (message === null) {
-    return null;
-  }
+import { useSelector } from 'react-redux'
+
+const Notification = () => {
+  const { message, success } = useSelector((store) => store.notification)
+  const type = success ? 'success' : 'error'
 
   const baseStyle = {
     padding: "10px",
@@ -26,8 +27,12 @@ const Notification = ({ message, type }) => {
         };
 
   return (
-    <div style={style} className={type}>
-      {message}
+    <div>
+      {message && (
+        <div style={style} className={type}>
+          {message}
+        </div>
+      )}
     </div>
   );
 };
