@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useState } from 'react'
 
 const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
-  const [blogInfoVisible, setBlogInfoVisible] = useState(false);
+  const [blogInfoVisible, setBlogInfoVisible] = useState(false)
 
-  const hideWhenVisible = { display: blogInfoVisible ? "none" : "" };
-  const showWhenVisible = { display: blogInfoVisible ? "" : "none" };
+  const hideWhenVisible = { display: blogInfoVisible ? 'none' : '' }
+  const showWhenVisible = { display: blogInfoVisible ? '' : 'none' }
 
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: "solid",
+    border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-  };
+  }
 
   const updateLikes = () => {
     const updatedBlog = {
@@ -21,15 +21,15 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
       author: blog.author,
       url: blog.url,
       likes: blog.likes + 1,
-    };
-    updateBlog(blog.id, updatedBlog);
-  };
+    }
+    updateBlog(blog.id, updatedBlog)
+  }
 
   const remove = () => {
     if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
-      deleteBlog(blog.id);
+      deleteBlog(blog.id)
     }
-  };
+  }
 
   return (
     <>
@@ -57,7 +57,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog

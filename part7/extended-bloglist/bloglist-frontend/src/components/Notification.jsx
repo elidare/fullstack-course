@@ -5,26 +5,26 @@ const Notification = () => {
   const type = success ? 'success' : 'error'
 
   const baseStyle = {
-    padding: "10px",
-    borderRadius: "5px",
-    marginBottom: "1rem",
-    fontWeight: "bold",
-  };
+    padding: '10px',
+    borderRadius: '5px',
+    marginBottom: '1rem',
+    fontWeight: 'bold',
+  }
 
   const style =
-    type === "error"
+    type === 'error'
       ? {
           ...baseStyle,
-          color: "red",
-          border: "1px solid red",
-          background: "#ffe5e5",
+          color: 'red',
+          border: '1px solid red',
+          background: '#ffe5e5',
         }
       : {
           ...baseStyle,
-          color: "green",
-          border: "1px solid green",
-          background: "#e5ffe5",
-        };
+          color: 'green',
+          border: '1px solid green',
+          background: '#e5ffe5',
+        }
 
   return (
     <div>
@@ -34,7 +34,7 @@ const Notification = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Notification;
+export default Notification

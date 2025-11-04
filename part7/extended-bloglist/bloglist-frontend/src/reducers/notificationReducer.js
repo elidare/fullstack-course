@@ -11,13 +11,13 @@ const notificationSlice = createSlice({
     },
     removeNotification(_state, _action) {
       return initialState
-    }
-  }
+    },
+  },
 })
 
 const { showNotification, removeNotification } = notificationSlice.actions
 
-export const setNotification = (message, success=false) => {
+export const setNotification = (message, success = false) => {
   return async (dispatch) => {
     dispatch(showNotification({ message, success }))
     setTimeout(() => {

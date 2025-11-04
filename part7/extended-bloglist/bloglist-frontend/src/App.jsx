@@ -1,87 +1,97 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import Blog from "./components/Blog";
-import BlogForm from "./components/BlogForm";
-import LoginForm from "./components/LoginForm";
-import Notification from "./components/Notification";
+import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
+import Notification from './components/Notification'
 import { setNotification } from './reducers/notificationReducer'
-import blogService from "./services/blogs";
-import loginService from "./services/login";
+import blogService from './services/blogs'
+import loginService from './services/login'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
-  const [blogFromVisible, setBlogFromVisible] = useState(false);
+  const [blogs, setBlogs] = useState([])
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
+  const [blogFromVisible, setBlogFromVisible] = useState(false)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    blogService.getAllBlogs().then((blogs) => setBlogs(blogs));
-  }, []);
+    blogService.getAllBlogs().then((blogs) => setBlogs(blogs))
+  }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogsappUser");
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogsappUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
     }
-  }, []);
+  }, [])
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
-      const user = await loginService.login({ username, password });
-      window.localStorage.setItem("loggedBlogsappUser", JSON.stringify(user));
-      setUser(user);
-      blogService.setToken(user.token);
-      setUsername("");
-      setPassword("");
+      const user = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedBlogsappUser', JSON.stringify(user))
+      setUser(user)
+      blogService.setToken(user.token)
+      setUsername('')
+      setPassword('')
     } catch {
       dispatch(setNotification('Wrong credentials'))
     }
-  };
+  }
 
   const logout = () => {
-    setUser(null);
-    window.localStorage.removeItem("loggedBlogsappUser");
-  };
+    setUser(null)
+    window.localStorage.removeItem('loggedBlogsappUser')
+  }
 
   const addBlog = async (newBlog) => {
     try {
-      const savedBlog = await blogService.createBlog(newBlog);
-      setBlogs(blogs.concat(savedBlog));
-      dispatch(setNotification(`A new blog ${newBlog.title} by ${newBlog.author} is added`, true))
+      const savedBlog = await blogService.createBlog(newBlog)
+      setBlogs(blogs.concat(savedBlog))
+      dispatch(
+        setNotification(
+          `A new blog ${newBlog.title} by ${newBlog.author} is added`,
+          true
+        )
+      )
     } catch {
       dispatch(setNotification('Something went wrong'))
     }
-  };
+  }
 
   const updateBlog = async (id, updatedBlog) => {
     try {
-      const savedBlog = await blogService.updateBlog(id, updatedBlog);
+      const savedBlog = await blogService.updateBlog(id, updatedBlog)
       setBlogs(
         blogs.map((blog) =>
-          blog.id === id ? { ...blog, likes: savedBlog.likes } : blog,
-        ),
-      );
-      dispatch(setNotification(`A blog ${updatedBlog.title} by ${updatedBlog.author} is updated`, true))
+          blog.id === id ? { ...blog, likes: savedBlog.likes } : blog
+        )
+      )
+      dispatch(
+        setNotification(
+          `A blog ${updatedBlog.title} by ${updatedBlog.author} is updated`,
+          true
+        )
+      )
     } catch {
       dispatch(setNotification('Something went wrong'))
     }
-  };
+  }
 
   const deleteBlog = async (id) => {
     try {
-      await blogService.deleteBlog(id);
-      setBlogs(blogs.filter((blog) => blog.id !== id));
+      await blogService.deleteBlog(id)
+      setBlogs(blogs.filter((blog) => blog.id !== id))
       dispatch(setNotification('The blog was deleted', true))
     } catch {
       dispatch(setNotification('Something went wrong'))
     }
-  };
+  }
 
   const blogsList = () => (
     <>
@@ -98,11 +108,11 @@ const App = () => {
           />
         ))}
     </>
-  );
+  )
 
   const blogForm = () => {
-    const hideWhenVisible = { display: blogFromVisible ? "none" : "" };
-    const showWhenVisible = { display: blogFromVisible ? "" : "none" };
+    const hideWhenVisible = { display: blogFromVisible ? 'none' : '' }
+    const showWhenVisible = { display: blogFromVisible ? '' : 'none' }
 
     return (
       <>
@@ -116,8 +126,8 @@ const App = () => {
           <button onClick={() => setBlogFromVisible(false)}>Cancel</button>
         </div>
       </>
-    );
-  };
+    )
+  }
 
   return (
     <div>
@@ -140,7 +150,7 @@ const App = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
