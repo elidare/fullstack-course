@@ -11,38 +11,29 @@ import {
   updateBlog,
   removeBlog,
 } from './reducers/blogReducer'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import { login, logout } from './reducers/userReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
   const [blogFromVisible, setBlogFromVisible] = useState(false)
   const dispatch = useDispatch()
   const blogs = useSelector((store) => store.blogs)
+  const user = useSelector((store) => store.user)
 
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogsappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
+    dispatch(login({ username, password }))
+  }, [dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
 
     try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedBlogsappUser', JSON.stringify(user))
-      setUser(user)
-      blogService.setToken(user.token)
+      dispatch(login({ username, password }))
       setUsername('')
       setPassword('')
     } catch {
@@ -50,9 +41,8 @@ const App = () => {
     }
   }
 
-  const logout = () => {
-    setUser(null)
-    window.localStorage.removeItem('loggedBlogsappUser')
+  const handleLogout = () => {
+    dispatch(logout())
   }
 
   const addBlog = async (newBlog) => {
@@ -145,7 +135,7 @@ const App = () => {
       {user && (
         <div>
           <p>{user.name} logged in</p>
-          <button onClick={() => logout()}>Log out</button>
+          <button onClick={handleLogout}>Log out</button>
           {blogForm()}
           {blogsList()}
         </div>
