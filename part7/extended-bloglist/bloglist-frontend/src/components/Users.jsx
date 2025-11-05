@@ -1,33 +1,37 @@
-import { useState, useEffect } from 'react'
-import userService from '../services/users'
+import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { getUserList } from '../reducers/userListReducer'
 
 const Users = () => {
-  const [users, setUsers] = useState(null)
-
-  const getUsers = async () => {
-    const users = await userService.getAllUsers()
-    setUsers(users)
-  }
+  const dispatch = useDispatch()
+  const userList = useSelector((store) => store.userList)
 
   useEffect(() => {
-    getUsers()
+    dispatch(getUserList())
   }, [])
 
   return (
     <div>
       <h1>Users</h1>
-      {users && (
+      {userList && (
         <table>
           <thead>
-            <th></th>
-            <th>Blogs created</th>
-          </thead>
-          {users.map((u) => (
             <tr>
-              <td>{u.name}</td>
-              <td>{u.blogs.length}</td>
+              <th></th>
+              <th>Blogs created</th>
             </tr>
-          ))}
+          </thead>
+          <tbody>
+            {userList.map((u) => (
+              <tr key={u.id}>
+                <td>
+                  <Link to={`/users/${u.id}`}>{u.name}</Link>
+                </td>
+                <td>{u.blogs.length}</td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       )}
     </div>

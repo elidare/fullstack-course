@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useMatch } from 'react-router-dom'
 import Blog from './components/Blog'
+import User from './components/User'
 import Users from './components/Users'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
@@ -20,8 +21,10 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [blogFromVisible, setBlogFromVisible] = useState(false)
   const dispatch = useDispatch()
+
+  const currentUser = useSelector((store) => store.currentUser)
+  const userList = useSelector((store) => store.userList)
   const blogs = useSelector((store) => store.blogs)
-  const user = useSelector((store) => store.user)
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -95,7 +98,7 @@ const App = () => {
               blog={blog}
               updateBlog={likeBlog}
               deleteBlog={deleteBlog}
-              user={user}
+              user={currentUser}
             />
           ))}
       </>
@@ -128,10 +131,14 @@ const App = () => {
     </div>
   )
 
+  const match = useMatch('/users/:id')
+  const user =
+    match && userList ? userList.find((u) => u.id === match.params.id) : null
+
   return (
     <div>
       <Notification />
-      {!user && (
+      {!currentUser && (
         <LoginForm
           username={username}
           password={password}
@@ -140,12 +147,13 @@ const App = () => {
           handleSubmit={handleLogin}
         />
       )}
-      {user && (
+      {currentUser && (
         <div>
           <h1>Blogs</h1>
-          <p>{user.name} logged in</p>
+          <p>{currentUser.name} logged in</p>
           <button onClick={handleLogout}>Log out</button>
           <Routes>
+            <Route path="/users/:id" element={<User user={user} />} />
             <Route path="/users" element={<Users />} />
             <Route path="/" element={<Blogs />} />
           </Routes>
