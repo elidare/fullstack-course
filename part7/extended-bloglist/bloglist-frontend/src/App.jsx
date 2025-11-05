@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Routes, Route } from 'react-router-dom'
 import Blog from './components/Blog'
+import Users from './components/Users'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
@@ -85,7 +87,6 @@ const App = () => {
   const blogsList = () => {
     return (
       <>
-        <h2>Blogs</h2>
         {[...blogs]
           .sort((a, b) => b.likes - a.likes)
           .map((blog) => (
@@ -120,6 +121,13 @@ const App = () => {
     )
   }
 
+  const Blogs = () => (
+    <div>
+      {blogForm()}
+      {blogsList()}
+    </div>
+  )
+
   return (
     <div>
       <Notification />
@@ -134,10 +142,13 @@ const App = () => {
       )}
       {user && (
         <div>
+          <h1>Blogs</h1>
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>Log out</button>
-          {blogForm()}
-          {blogsList()}
+          <Routes>
+            <Route path="/users" element={<Users />} />
+            <Route path="/" element={<Blogs />} />
+          </Routes>
         </div>
       )}
     </div>
