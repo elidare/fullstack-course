@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Routes, Route, useMatch } from 'react-router-dom'
+import { Routes, Route, useMatch, Link } from 'react-router-dom'
 import Blog from './components/Blog'
 import User from './components/User'
 import Users from './components/Users'
@@ -88,18 +88,26 @@ const App = () => {
   }
 
   const blogsList = () => {
+    const blogStyle = {
+      paddingTop: 10,
+      paddingLeft: 2,
+      border: 'solid',
+      borderWidth: 1,
+      marginBottom: 5,
+    }
+
     return (
       <>
         {[...blogs]
           .sort((a, b) => b.likes - a.likes)
           .map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              updateBlog={likeBlog}
-              deleteBlog={deleteBlog}
-              user={currentUser}
-            />
+            <div style={blogStyle} key={blog.id}>
+              <Link to={`/blogs/${blog.id}`}>
+                <span className="blog-summary">
+                  {blog.title} {blog.author}
+                </span>
+              </Link>
+            </div>
           ))}
       </>
     )
@@ -131,9 +139,15 @@ const App = () => {
     </div>
   )
 
-  const match = useMatch('/users/:id')
+  const matchUser = useMatch('/users/:id')
   const user =
-    match && userList ? userList.find((u) => u.id === match.params.id) : null
+    matchUser && userList
+      ? userList.find((u) => u.id === matchUser.params.id)
+      : null
+
+  const matchBlog = useMatch('/blogs/:id')
+  const selectedBlog =
+    matchBlog && blogs ? blogs.find((b) => b.id === matchBlog.params.id) : null
 
   return (
     <div>
@@ -153,6 +167,17 @@ const App = () => {
           <p>{currentUser.name} logged in</p>
           <button onClick={handleLogout}>Log out</button>
           <Routes>
+            <Route
+              path="/blogs/:id"
+              element={
+                <Blog
+                  blog={selectedBlog}
+                  updateBlog={likeBlog}
+                  deleteBlog={deleteBlog}
+                  user={currentUser}
+                />
+              }
+            />
             <Route path="/users/:id" element={<User user={user} />} />
             <Route path="/users" element={<Users />} />
             <Route path="/" element={<Blogs />} />
