@@ -1,4 +1,8 @@
-const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
+import { useState } from 'react'
+
+const Blog = ({ blog, updateBlog, deleteBlog, updateComments, user }) => {
+  const [comment, setComment] = useState('')
+
   const updateLikes = () => {
     const updatedBlog = {
       user: blog.user.id,
@@ -14,6 +18,12 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
     if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
       deleteBlog(blog.id)
     }
+  }
+
+  const addComment = (event) => {
+    event.preventDefault()
+    updateComments(blog.id, comment)
+    setComment('')
   }
 
   if (!blog) {
@@ -40,6 +50,16 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
             <button onClick={() => remove()}>Delete</button>
           )}
           <h3>Comments</h3>
+          <form onSubmit={addComment}>
+            <label>
+              <input
+                type="text"
+                value={comment}
+                onChange={({ target }) => setComment(target.value)}
+              />
+            </label>
+            <button type="submit">Add comment</button>
+          </form>
           {blog.comments && (
             <ul>
               {blog.comments.map((c) => (

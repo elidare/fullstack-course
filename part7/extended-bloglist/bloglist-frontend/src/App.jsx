@@ -13,6 +13,7 @@ import {
   appendBlog,
   updateBlog,
   removeBlog,
+  addComment,
 } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
 
@@ -85,6 +86,10 @@ const App = () => {
     } catch {
       dispatch(setNotification('Something went wrong'))
     }
+  }
+
+  const updateComments = (id, comment) => {
+    dispatch(addComment(id, comment))
   }
 
   const blogsList = () => {
@@ -197,6 +202,7 @@ const App = () => {
                   blog={selectedBlog}
                   updateBlog={likeBlog}
                   deleteBlog={deleteBlog}
+                  updateComments={updateComments}
                   user={currentUser}
                 />
               }
