@@ -29,10 +29,11 @@ blogSchema.set('toJSON', {
   transform: (_, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
-    returnedObject.comments.map((c) => {
-      c.id = c._id.toString()
-      delete c._id
-    })
+    returnedObject.comments &&
+      returnedObject.comments.map((c) => {
+        c.id = c._id.toString()
+        delete c._id
+      })
     delete returnedObject.__v
   },
 })
