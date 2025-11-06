@@ -132,8 +132,33 @@ const App = () => {
     )
   }
 
+  const Menu = ({ currentUser }) => {
+    const padding = {
+      paddingRight: 5,
+    }
+
+    const menu = {
+      padding: 5,
+      backgroundColor: '#eee',
+    }
+
+    return (
+      <div style={menu}>
+        <Link style={padding} to="/">
+          Blogs
+        </Link>
+        <Link style={padding} to="/users">
+          Users
+        </Link>
+        <span style={padding}>{currentUser.name} logged in</span>
+        <button onClick={handleLogout}>Log out</button>
+      </div>
+    )
+  }
+
   const Blogs = () => (
     <div>
+      <h1>Blogs</h1>
       {blogForm()}
       {blogsList()}
     </div>
@@ -163,9 +188,7 @@ const App = () => {
       )}
       {currentUser && (
         <div>
-          <h1>Blogs</h1>
-          <p>{currentUser.name} logged in</p>
-          <button onClick={handleLogout}>Log out</button>
+          <Menu currentUser={currentUser} />
           <Routes>
             <Route
               path="/blogs/:id"
