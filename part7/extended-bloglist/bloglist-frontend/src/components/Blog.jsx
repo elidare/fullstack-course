@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   const updateLikes = () => {
     const updatedBlog = {
@@ -40,6 +38,14 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
           <br />
           {user && user.username === blog.user.username && (
             <button onClick={() => remove()}>Delete</button>
+          )}
+          <h3>Comments</h3>
+          {blog.comments && (
+            <ul>
+              {blog.comments.map((c) => (
+                <li key={c.id}>{c.comment}</li>
+              ))}
+            </ul>
           )}
         </div>
       </div>

@@ -3,16 +3,17 @@ const Blog = require('../models/blog')
 const { userExtractor } = require('../utils/middleware')
 
 blogsRouter.get('/', async (_request, response) => {
-  const blogs = await Blog
-    .find({}).populate('user', { username: 1, name: 1 })
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs)
 })
 
 blogsRouter.get('/:id', async (request, response, next) => {
   try {
-    const blog = await Blog
-      .findById(request.params.id)
-      .populate('user', { username: 1, name: 1 })
+    const blog = await Blog.findById(request.params.id).populate('user', {
+      username: 1,
+      name: 1,
+    })
+
     if (blog) {
       response.json(blog)
     } else {
@@ -37,13 +38,14 @@ blogsRouter.post('/', userExtractor, async (request, response, next) => {
       author: body.author,
       url: body.url,
       likes: body.likes,
-      user: user._id
+      user: user._id,
     })
 
     const savedBlog = await blog.save()
-    const returnedBlog = await Blog
-      .findById(savedBlog.id)
-      .populate('user', { username: 1, name: 1 })
+    const returnedBlog = await Blog.findById(savedBlog.id).populate('user', {
+      username: 1,
+      name: 1,
+    })
 
     response.status(201).json(returnedBlog)
 
@@ -60,7 +62,9 @@ blogsRouter.delete('/:id', userExtractor, async (request, response, next) => {
     const blogToDelete = await Blog.findById(request.params.id)
 
     if (blogToDelete.user.toString() !== user.id.toString()) {
-      return response.status(400).json({ error: 'A blog can be deleted only by user who created it' })
+      return response
+        .status(400)
+        .json({ error: 'A blog can be deleted only by user who created it' })
     }
 
     await Blog.findByIdAndDelete(request.params.id)
@@ -89,5 +93,39 @@ blogsRouter.put('/:id', async (request, response, next) => {
     next(error)
   }
 })
+
+blogsRouter.post(
+  '/:id/comments',
+  userExtractor,
+  async (request, response, next) => {
+    try {
+      const { id } = request.params
+      const { comment } = request.body
+      const user = request.user
+
+      if (!user) {
+        return response
+          .status(400)
+          .json({ error: 'UserId missing or not valid' })
+      }
+
+      if (!comment || comment.trim() === '') {
+        return response.status(400).json({ error: 'Comment cannot be empty' })
+      }
+
+      const blogToUpdate = await Blog.findById(id)
+      blogToUpdate.comments.push({ comment })
+      const savedBlog = await blogToUpdate.save()
+      const returnedBlog = await Blog.findById(savedBlog.id).populate('user', {
+        username: 1,
+        name: 1,
+      })
+
+      response.status(201).json(returnedBlog)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
 
 module.exports = blogsRouter
