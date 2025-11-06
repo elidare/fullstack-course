@@ -16,6 +16,7 @@ import {
   addComment,
 } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
+import { Container } from '@mui/material'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -180,40 +181,42 @@ const App = () => {
     matchBlog && blogs ? blogs.find((b) => b.id === matchBlog.params.id) : null
 
   return (
-    <div>
-      <Notification />
-      {!currentUser && (
-        <LoginForm
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleSubmit={handleLogin}
-        />
-      )}
-      {currentUser && (
-        <div>
-          <Menu currentUser={currentUser} />
-          <Routes>
-            <Route
-              path="/blogs/:id"
-              element={
-                <Blog
-                  blog={selectedBlog}
-                  updateBlog={likeBlog}
-                  deleteBlog={deleteBlog}
-                  updateComments={updateComments}
-                  user={currentUser}
-                />
-              }
-            />
-            <Route path="/users/:id" element={<User user={user} />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/" element={<Blogs />} />
-          </Routes>
-        </div>
-      )}
-    </div>
+    <Container>
+      <div>
+        <Notification />
+        {!currentUser && (
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+        )}
+        {currentUser && (
+          <div>
+            <Menu currentUser={currentUser} />
+            <Routes>
+              <Route
+                path="/blogs/:id"
+                element={
+                  <Blog
+                    blog={selectedBlog}
+                    updateBlog={likeBlog}
+                    deleteBlog={deleteBlog}
+                    updateComments={updateComments}
+                    user={currentUser}
+                  />
+                }
+              />
+              <Route path="/users/:id" element={<User user={user} />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/" element={<Blogs />} />
+            </Routes>
+          </div>
+        )}
+      </div>
+    </Container>
   )
 }
 
