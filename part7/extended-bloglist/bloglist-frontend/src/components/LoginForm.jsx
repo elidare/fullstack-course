@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import {
+  Box,
   Button,
   FormControl,
   Input,
@@ -31,9 +32,15 @@ const LoginForm = ({
 
   return (
     <div>
-      <Typography variant="h3" component="h1">
-        Login
-      </Typography>
+      <Box sx={{ borderLeft: 4, borderColor: 'primary.main', pl: 2 }}>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{ color: 'text.primary', fontWeight: 600, my: 2 }}
+        >
+          Log in
+        </Typography>
+      </Box>
       <form onSubmit={handleSubmit}>
         <div>
           <FormControl

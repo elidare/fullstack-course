@@ -4,6 +4,7 @@ import { Routes, Route, useMatch, Link } from 'react-router-dom'
 import Blog from './components/Blog'
 import User from './components/User'
 import Users from './components/Users'
+import Header from './components/Header'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
@@ -17,6 +18,16 @@ import {
 } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
 import { Container } from '@mui/material'
+import {
+  Box,
+  Button,
+  FormControl,
+  Input,
+  InputLabel,
+  InputAdornment,
+  IconButton,
+  Typography,
+} from '@mui/material'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -138,33 +149,17 @@ const App = () => {
     )
   }
 
-  const Menu = ({ currentUser }) => {
-    const padding = {
-      paddingRight: 5,
-    }
-
-    const menu = {
-      padding: 5,
-      backgroundColor: '#eee',
-    }
-
-    return (
-      <div style={menu}>
-        <Link style={padding} to="/">
-          Blogs
-        </Link>
-        <Link style={padding} to="/users">
-          Users
-        </Link>
-        <span style={padding}>{currentUser.name} logged in</span>
-        <button onClick={handleLogout}>Log out</button>
-      </div>
-    )
-  }
-
   const Blogs = () => (
     <div>
-      <h1>Blogs</h1>
+      <Box sx={{ borderLeft: 4, borderColor: 'primary.main', pl: 2 }}>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{ color: 'text.primary', fontWeight: 600, my: 2 }}
+        >
+          Blogs
+        </Typography>
+      </Box>
       {blogForm()}
       {blogsList()}
     </div>
@@ -181,7 +176,13 @@ const App = () => {
     matchBlog && blogs ? blogs.find((b) => b.id === matchBlog.params.id) : null
 
   return (
-    <Container>
+    <Container
+      sx={{
+        backgroundColor: 'grey.100',
+        minHeight: '100vh',
+        py: 4,
+      }}
+    >
       <div>
         <Notification />
         {!currentUser && (
@@ -195,7 +196,7 @@ const App = () => {
         )}
         {currentUser && (
           <div>
-            <Menu currentUser={currentUser} />
+            <Header currentUser={currentUser} handleLogout={handleLogout} />
             <Routes>
               <Route
                 path="/blogs/:id"

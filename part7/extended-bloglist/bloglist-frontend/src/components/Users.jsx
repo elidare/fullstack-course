@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { getUserList } from '../reducers/userListReducer'
+import { Typography, Box } from '@mui/material'
 
 const Users = () => {
   const dispatch = useDispatch()
@@ -13,7 +14,15 @@ const Users = () => {
 
   return (
     <div>
-      <h1>Users</h1>
+      <Box sx={{ borderLeft: 4, borderColor: 'primary.main', pl: 2 }}>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{ color: 'text.primary', fontWeight: 600, my: 2 }}
+        >
+          Users
+        </Typography>
+      </Box>
       {userList && (
         <table>
           <thead>
