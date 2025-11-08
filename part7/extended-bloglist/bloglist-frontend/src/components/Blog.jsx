@@ -1,7 +1,18 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  Box,
+  Typography,
+  Button,
+  TextField,
+  Link as MuiLink,
+  List,
+  ListItem,
+} from '@mui/material'
 
 const Blog = ({ blog, updateBlog, deleteBlog, updateComments, user }) => {
   const [comment, setComment] = useState('')
+  const navigate = useNavigate()
 
   const updateLikes = () => {
     const updatedBlog = {
@@ -17,6 +28,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, updateComments, user }) => {
   const remove = () => {
     if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
       deleteBlog(blog.id)
+      navigate('/')
     }
   }
 
@@ -32,43 +44,66 @@ const Blog = ({ blog, updateBlog, deleteBlog, updateComments, user }) => {
 
   return (
     <>
-      <div>
-        <h1 className="blog-summary">
-          {blog.title} {blog.author}
-        </h1>
-        <div>
-          <span>
-            <a href={blog.url}>{blog.url}</a>
-          </span>
-          <br />
-          <span>Likes&nbsp;{blog.likes}</span>
-          <button onClick={() => updateLikes()}>Like</button>
-          <br />
-          <span>Added by {blog.user.name}</span>
-          <br />
+      <Box sx={{ p: 3, textAlign: 'left' }}>
+        <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
+          {blog.title}: {blog.author}
+        </Typography>
+        <Box sx={{ mb: 2 }}>
+          <MuiLink href={blog.url} target="_blank" rel="noopener noreferrer">
+            {blog.url}
+          </MuiLink>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            Likes {blog.likes}{' '}
+            <Button
+              variant="contained"
+              size="small"
+              sx={{ ml: 1 }}
+              onClick={updateLikes}
+            >
+              Like
+            </Button>
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            Added by {blog.user.name}
+          </Typography>
           {user && user.username === blog.user.username && (
-            <button onClick={() => remove()}>Delete</button>
+            <Button
+              variant="outlined"
+              color="error"
+              size="small"
+              sx={{ mt: 1 }}
+              onClick={remove}
+            >
+              Delete
+            </Button>
           )}
-          <h3>Comments</h3>
-          <form onSubmit={addComment}>
-            <label>
-              <input
-                type="text"
-                value={comment}
-                onChange={({ target }) => setComment(target.value)}
-              />
-            </label>
-            <button type="submit">Add comment</button>
-          </form>
-          {blog.comments && (
-            <ul>
-              {blog.comments.map((c) => (
-                <li key={c.id}>{c.comment}</li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
+        </Box>
+        <Typography variant="h6" sx={{ mb: 1 }}>
+          Comments
+        </Typography>
+        <Box
+          component="form"
+          onSubmit={addComment}
+          sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}
+        >
+          <TextField
+            variant="outlined"
+            size="small"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+          <Button type="submit" variant="contained">
+            Add comment
+          </Button>
+        </Box>
+        {blog.comments && (
+          <List dense>
+            {blog.comments.map((c, index) => (
+              <ListItem key={index}>{c.comment}</ListItem>
+            ))}
+          </List>
+        )}
+      </Box>
     </>
   )
 }
