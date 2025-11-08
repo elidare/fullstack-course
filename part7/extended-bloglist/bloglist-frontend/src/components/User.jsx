@@ -1,3 +1,5 @@
+import { Box, Card, CardContent, Typography } from '@mui/material'
+
 const User = ({ user }) => {
   if (!user) {
     return null
@@ -5,13 +7,27 @@ const User = ({ user }) => {
 
   return (
     <>
-      <h1>{user.name}</h1>
-      <h2>Added blogs</h2>
-      <ul>
-        {user.blogs.map((b) => (
-          <li key={b.id}>{b.title}</li>
-        ))}
-      </ul>
+      <Card sx={{ maxWidth: 400, m: 2, boxShadow: 2 }}>
+        <CardContent>
+          <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
+            {user.name}
+          </Typography>
+          <Typography variant="h6" sx={{ mb: 1 }}>
+            Added blogs
+          </Typography>
+          <Box
+            component="ul"
+            sx={{
+              pl: 2,
+              m: 0,
+            }}
+          >
+            {user.blogs.map((b) => (
+              <li key={b.id}>{b.title}</li>
+            ))}
+          </Box>
+        </CardContent>
+      </Card>
     </>
   )
 }
