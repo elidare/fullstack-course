@@ -18,16 +18,7 @@ import {
 } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
 import { Container } from '@mui/material'
-import {
-  Box,
-  Button,
-  FormControl,
-  Input,
-  InputLabel,
-  InputAdornment,
-  IconButton,
-  Typography,
-} from '@mui/material'
+import { Box, Button, Typography, Card, CardContent } from '@mui/material'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -105,28 +96,51 @@ const App = () => {
   }
 
   const blogsList = () => {
-    const blogStyle = {
-      paddingTop: 10,
-      paddingLeft: 2,
-      border: 'solid',
-      borderWidth: 1,
-      marginBottom: 5,
-    }
-
     return (
-      <>
+      <Box
+        sx={{
+          bgcolor: 'grey.100',
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-start',
+          alignItems: 'flex-start',
+          gap: 2,
+          py: 2,
+        }}
+      >
         {[...blogs]
           .sort((a, b) => b.likes - a.likes)
           .map((blog) => (
-            <div style={blogStyle} key={blog.id}>
-              <Link to={`/blogs/${blog.id}`}>
-                <span className="blog-summary">
-                  {blog.title} {blog.author}
-                </span>
-              </Link>
-            </div>
+            <Card
+              key={blog.id}
+              sx={{
+                flex: '1 1 calc(33.33%)',
+                maxWidth: '300px',
+                boxShadow: 2,
+                borderRadius: 2,
+                transition: '0.2s',
+                '&:hover': { boxShadow: 5, transform: 'translateY(-2px)' },
+              }}
+            >
+              <CardContent>
+                <Link
+                  to={`/blogs/${blog.id}`}
+                  style={{
+                    textDecoration: 'none',
+                    color: 'inherit',
+                  }}
+                >
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    {blog.title}
+                  </Typography>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    by {blog.author}
+                  </Typography>
+                </Link>
+              </CardContent>
+            </Card>
           ))}
-      </>
+      </Box>
     )
   }
 
@@ -137,13 +151,23 @@ const App = () => {
     return (
       <>
         <div style={hideWhenVisible}>
-          <button onClick={() => setBlogFromVisible(true)}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setBlogFromVisible(true)}
+          >
             Create new blog
-          </button>
+          </Button>
         </div>
         <div style={showWhenVisible}>
           <BlogForm handleSubmit={addBlog} />
-          <button onClick={() => setBlogFromVisible(false)}>Cancel</button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setBlogFromVisible(false)}
+          >
+            Cancel
+          </Button>
         </div>
       </>
     )
@@ -160,8 +184,8 @@ const App = () => {
           Blogs
         </Typography>
       </Box>
-      {blogForm()}
       {blogsList()}
+      {blogForm()}
     </div>
   )
 
