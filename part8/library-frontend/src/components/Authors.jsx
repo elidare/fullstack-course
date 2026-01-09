@@ -12,11 +12,7 @@ const ALL_AUTHORS = gql`
   }
 `;
 
-const Authors = (props) => {
-  if (!props.show) {
-    return null;
-  }
-
+const Authors = () => {
   const result = useQuery(ALL_AUTHORS);
 
   if (result.loading) {

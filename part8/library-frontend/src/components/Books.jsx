@@ -1,20 +1,16 @@
-const Books = (props) => {
-  if (!props.show) {
-    return null
-  }
-
-  const books = []
+const Books = () => {
+  const books = [];
 
   return (
     <div>
-      <h2>books</h2>
+      <h2>Books</h2>
 
       <table>
         <tbody>
           <tr>
             <th></th>
-            <th>author</th>
-            <th>published</th>
+            <th>Author</th>
+            <th>Published</th>
           </tr>
           {books.map((a) => (
             <tr key={a.id}>
@@ -26,7 +22,7 @@ const Books = (props) => {
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default Books
+export default Books;
