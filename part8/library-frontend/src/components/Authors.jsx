@@ -1,16 +1,5 @@
-import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
-
-const ALL_AUTHORS = gql`
-  query {
-    allAuthors {
-      bookCount
-      born
-      id
-      name
-    }
-  }
-`;
+import { ALL_AUTHORS } from "../queries";
 
 const Authors = () => {
   const result = useQuery(ALL_AUTHORS);

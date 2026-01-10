@@ -1,50 +1,6 @@
 import { useState } from "react";
-import { gql } from "@apollo/client";
 import { useMutation } from "@apollo/client/react";
-
-const ALL_BOOKS = gql`
-  query {
-    allBooks {
-      author
-      id
-      published
-      title
-    }
-  }
-`;
-
-const ALL_AUTHORS = gql`
-  query {
-    allAuthors {
-      bookCount
-      born
-      id
-      name
-    }
-  }
-`;
-
-const CREATE_BOOK = gql`
-  mutation createBook(
-    $title: String!
-    $published: Int!
-    $author: String!
-    $genres: [String!]!
-  ) {
-    addBook(
-      title: $title
-      published: $published
-      author: $author
-      genres: $genres
-    ) {
-      title
-      published
-      author
-      genres
-      id
-    }
-  }
-`;
+import { ALL_BOOKS, ALL_AUTHORS, CREATE_BOOK } from "../queries";
 
 const NewBook = () => {
   const [title, setTitle] = useState("");
