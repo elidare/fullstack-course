@@ -7,25 +7,31 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      let filtered = Book.find({});
+      const filters = {};
 
       if (args.author) {
-        // todo
-        filtered = filtered.filter((b) => b.author === args.author);
+        // Find author id
+        const author = await Author.findOne({ name: args.author });
+
+        if (!author) {
+          return [];
+        }
+
+        filters.author = author._id;
       }
 
       if (args.genre) {
-        // todo
-        filtered = filtered.filter((b) => b.genres.includes(args.genre));
+        filters.genres = args.genre;
       }
 
-      return filtered;
+      return Book.find(filters).populate("author");
     },
     allAuthors: async () => Author.find({}),
   },
   Author: {
     bookCount: async (root) => {
-      return Book.find({ author: root.name }).length;
+      const books = await Book.find({ author: root._id });
+      return books.length;
     },
   },
   Mutation: {
