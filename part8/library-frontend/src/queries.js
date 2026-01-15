@@ -3,7 +3,9 @@ import { gql } from "@apollo/client";
 export const ALL_BOOKS = gql`
   query {
     allBooks {
-      author
+      author {
+        name
+      }
       id
       published
       title
