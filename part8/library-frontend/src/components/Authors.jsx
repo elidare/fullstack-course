@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client/react";
 import { ALL_AUTHORS } from "../queries";
 import AuthorsEdit from "./AuthorsEdit";
 
-const Authors = () => {
+const Authors = ({ token }) => {
   const result = useQuery(ALL_AUTHORS);
 
   if (result.loading) {
@@ -30,7 +30,7 @@ const Authors = () => {
           ))}
         </tbody>
       </table>
-      <AuthorsEdit authors={authors} />
+      {token && <AuthorsEdit authors={authors} />}
     </div>
   );
 };
