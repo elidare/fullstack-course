@@ -5,6 +5,7 @@ import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
+import Recommendations from "./components/Recommendations";
 
 const App = () => {
   const [token, setToken] = useState(
@@ -38,6 +39,9 @@ const App = () => {
               <Link className="navbar-link" to="/add">
                 Add book
               </Link>
+              <Link className="navbar-link" to="/recommend">
+                Recommend
+              </Link>
               <Link className="navbar-link" onClick={() => logout()}>
                 Log out
               </Link>
@@ -48,7 +52,12 @@ const App = () => {
         <Routes>
           <Route path="/authors" element={<Authors token={token} />} />
           <Route path="/books" element={<Books />} />
-          {token && <Route path="/add" element={<NewBook />} />}
+          {token && (
+            <>
+              <Route path="/add" element={<NewBook />} />
+              <Route path="/recommend" element={<Recommendations />} />
+            </>
+          )}
           {!token && (
             <Route path="login" element={<LoginForm setToken={setToken} />} />
           )}
