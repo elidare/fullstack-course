@@ -9,7 +9,7 @@ import Recommendations from "./components/Recommendations";
 
 const App = () => {
   const [token, setToken] = useState(
-    window.localStorage.getItem("phonebook-user-token")
+    window.localStorage.getItem("phonebook-user-token"),
   );
   const client = useApolloClient();
 

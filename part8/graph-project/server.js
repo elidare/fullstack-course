@@ -10,7 +10,7 @@ const cors = require("cors");
 const express = require("express");
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 const http = require("http");
-const { startStandaloneServer } = require("@apollo/server/standalone");
+
 const jwt = require("jsonwebtoken");
 
 const resolvers = require("./resolvers");
