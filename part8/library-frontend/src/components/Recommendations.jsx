@@ -1,5 +1,5 @@
-import { useQuery } from "@apollo/client/react";
-import { ME, ALL_BOOKS } from "../queries";
+import { useQuery, useSubscription } from "@apollo/client/react";
+import { ME, ALL_BOOKS, BOOK_ADDED } from "../queries";
 
 const Recommendations = () => {
   const me = useQuery(ME);
@@ -11,11 +11,26 @@ const Recommendations = () => {
     skip: !favoriteGenre,
   });
 
-  if (me.loading) {
-    return <div>Loading...</div>;
-  }
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const book = data.data.bookAdded;
+      window.alert(`New book added: ${book.title}`);
 
-  if (booksResult.loading) {
+      client.cache.updateQuery(
+        {
+          query: ALL_BOOKS,
+          variables: { genre: favoriteGenre },
+        },
+        ({ allBooks }) => {
+          return {
+            allBooks: allBooks.concat(book),
+          };
+        },
+      );
+    },
+  });
+
+  if (me.loading || booksResult.loading) {
     return <div>Loading...</div>;
   }
 

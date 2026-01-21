@@ -41,6 +41,12 @@ export const ALL_AUTHORS = gql`
   ${AUTHOR_DETAILS}
 `;
 
+export const ALL_GENRES = gql`
+  query {
+    allGenres
+  }
+`;
+
 export const ME = gql`
   query {
     me {

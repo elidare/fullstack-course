@@ -1,48 +1,52 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useSubscription } from "@apollo/client/react";
-import { ALL_BOOKS, BOOK_ADDED } from "../queries";
+import { ALL_BOOKS, ALL_GENRES, BOOK_ADDED } from "../queries";
 
 const Books = () => {
-  const [selectedGenre, setSelectedGenre] = useState("");
-  const [genres, setGenres] = useState([]);
-  const result = useQuery(ALL_BOOKS);
   const DEFAULT_GENRE = "all genres";
+  const [selectedGenre, setSelectedGenre] = useState(DEFAULT_GENRE);
 
-  const books = result.data?.allBooks || [];
+  const booksResult = useQuery(ALL_BOOKS, {
+    variables: selectedGenre === DEFAULT_GENRE ? {} : { genre: selectedGenre },
+  });
 
-  useEffect(() => {
-    if (result.data) {
-      let uniqueGenres = [
-        ...new Set(books.flatMap((b) => b.genres)),
-        DEFAULT_GENRE,
-      ];
-
-      setGenres(uniqueGenres);
-      setSelectedGenre(DEFAULT_GENRE);
-    }
-  }, [result.data]);
+  const genresResult = useQuery(ALL_GENRES);
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data, client }) => {
       const book = data.data.bookAdded;
       window.alert(`New book added: ${book.title}`);
 
-      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+      const update = ({ allBooks }) => {
         return {
           allBooks: allBooks.concat(book),
         };
-      });
+      };
+
+      client.cache.updateQuery({ query: ALL_BOOKS }, update);
+
+      if (
+        selectedGenre !== DEFAULT_GENRE &&
+        book.genres.includes(selectedGenre)
+      ) {
+        client.cache.updateQuery(
+          {
+            query: ALL_BOOKS,
+            variables: { genre: selectedGenre },
+          },
+          update,
+        );
+      }
     },
   });
 
-  if (result.loading) {
+  if (booksResult.loading || genresResult.loading) {
     return <div>Loading...</div>;
   }
 
-  const filteredBooks =
-    selectedGenre === DEFAULT_GENRE
-      ? books
-      : books.filter((b) => b.genres.includes(selectedGenre));
+  const books = booksResult.data?.allBooks || [];
+
+  const genres = [...genresResult.data.allGenres, DEFAULT_GENRE];
 
   return (
     <div>
@@ -59,7 +63,7 @@ const Books = () => {
             <th>Author</th>
             <th>Published</th>
           </tr>
-          {filteredBooks.map((a) => (
+          {books.map((a) => (
             <tr key={a.id}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>

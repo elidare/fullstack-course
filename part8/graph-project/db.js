@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+mongoose.set("debug", true);
+
 const connectToDatabase = async (uri) => {
   console.log("Connecting to database URI:", uri);
 

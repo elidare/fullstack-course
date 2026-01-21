@@ -32,6 +32,10 @@ const resolvers = {
       return Book.find(filters).populate("author");
     },
     allAuthors: async () => Author.find({}),
+    allGenres: async () => {
+      const genres = await Book.distinct("genres");
+      return genres;
+    },
     me: (_root, _args, context) => {
       return context.currentUser;
     },
