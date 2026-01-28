@@ -21,7 +21,7 @@ const parseArgumentsCalculator = (args: string[]): Values => {
   // Assuming nobody will input a long array, let's no have a limit here at the moment
   if (args.length < 4) throw new Error("Not enough arguments");
 
-  let days: number[] = [];
+  const days: number[] = [];
   let target: number;
 
   // Let's go through args one by one and check every. Push to days if a number
@@ -56,7 +56,6 @@ const calculateExercises = (days: number[], target: number): Result => {
 
   const success = average >= target;
   let rating;
-  let ratingDescription;
 
   // Let's say You're a star! if you work twice harder
   if (average >= target * 2) {
@@ -67,7 +66,7 @@ const calculateExercises = (days: number[], target: number): Result => {
     rating = 1;
   }
 
-  ratingDescription = ratings[rating];
+  const ratingDescription = ratings[rating];
 
   return {
     periodLength,

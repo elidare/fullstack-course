@@ -8,19 +8,29 @@ interface BmiParams {
   height: number;
 }
 
-app.get("/bmi", (req: Request<{}, {}, {}, BmiParams>, res: Response) => {
-  const { weight, height } = req.query;
+app.get(
+  "/bmi",
+  (req: Request<unknown, unknown, unknown, BmiParams>, res: Response) => {
+    const { weight, height } = req.query;
 
-  if (!weight || !height || weight <= 0 || height <= 0) {
-    res.status(400).send({ message: "Malformatted parameters" });
-  }
+    if (
+      !weight ||
+      !height ||
+      isNaN(height) ||
+      isNaN(weight) ||
+      weight <= 0 ||
+      height <= 0
+    ) {
+      res.status(400).send({ message: "Malformatted or incorrect parameters" });
+    }
 
-  res.json({
-    weight,
-    height,
-    bmi: calculateBmi(height, weight),
-  });
-});
+    res.json({
+      weight,
+      height,
+      bmi: calculateBmi(height, weight),
+    });
+  },
+);
 
 app.get("/hello", (_req, res) => {
   res.send("Hello Full Stack!");
