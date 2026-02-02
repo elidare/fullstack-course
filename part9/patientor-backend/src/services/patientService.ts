@@ -16,6 +16,11 @@ const getNonSensitiveEntries = (): NonSensitivePatientEntry[] => {
   }));
 };
 
+const findById = (id: string): NonSensitivePatientEntry | undefined => {
+  const entry = patients.find((d) => d.id === id);
+  return entry;
+};
+
 const addPatient = () => {
   return null;
 };
@@ -24,4 +29,5 @@ export default {
   getEntries,
   addPatient,
   getNonSensitiveEntries,
+  findById,
 };
