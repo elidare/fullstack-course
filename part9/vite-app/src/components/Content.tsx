@@ -1,17 +1,12 @@
 import React from "react";
+import Part from "./Part";
+import type { CoursePart } from "../../types";
 
-type Part = {
-  name: string;
-  exerciseCount: number;
-};
-
-const Content = ({ parts }: { parts: Part[] }): React.JSX.Element => {
+const Content = ({ parts }: { parts: CoursePart[] }): React.JSX.Element => {
   return (
     <div>
       {parts.map((p) => (
-        <p key={p.name}>
-          {p.name} {p.exerciseCount}
-        </p>
+        <Part part={p} />
       ))}
     </div>
   );
