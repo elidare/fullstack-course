@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
+import type { DiaryEntry } from "./../types";
 import diaryService from "./services/diaries";
-import type { DiaryEntry } from "../types";
+import DiariesList from "./components/DiariesList";
 
-function App() {
+const App = () => {
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
 
   useEffect(() => {
@@ -16,25 +17,10 @@ function App() {
 
   return (
     <>
-      <h1>Diary entries</h1>
-      <div>
-        {diaries.map((d) => (
-          <div key={d.id}>
-            <p>
-              <b>{d.date}</b>
-            </p>
-            <div>
-              <div>Visibility: {d.visibility}</div>
-              <div>Weather: {d.weather}</div>
-              <div>
-                Comment: <i>{d.comment}</i>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <h1>Flight diary</h1>
+      <DiariesList diaries={diaries}></DiariesList>
     </>
   );
-}
+};
 
 export default App;
