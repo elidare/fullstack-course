@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Response } from "express";
-import { NonSensitivePatientEntry } from "../types";
+import { NonSensitivePatientEntry, PatientEntry } from "../types";
 import { newEntrySchema } from "../utils";
 
 import express from "express";
@@ -12,8 +12,12 @@ router.get("/", (_req, res: Response<NonSensitivePatientEntry[]>) => {
   res.send(patientService.getNonSensitiveEntries());
 });
 
-router.get("/:id", (req, res: Response<NonSensitivePatientEntry>) => {
+router.get("/:id", (req, res: Response<PatientEntry>) => {
   const patient = patientService.findById(req.params.id);
+
+  if (patient && !patient.entries) {
+    patient["entries"] = [];
+  }
 
   if (patient) {
     res.send(patient);
