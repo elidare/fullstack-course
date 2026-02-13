@@ -50,6 +50,26 @@ const PatientInfoPage = () => {
         <br />
         Occupation: {patient.occupation}
       </div>
+      <Typography
+        variant="h5"
+        style={{
+          marginTop: "0.5em",
+        }}
+      >
+        Entries
+      </Typography>
+      {patient.entries.map((e) => (
+        <div key={e.id}>
+          <div>
+            {e.date}&nbsp;<i>{e.description}</i>
+          </div>
+          <ul>
+            {e.diagnosisCodes?.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 };
