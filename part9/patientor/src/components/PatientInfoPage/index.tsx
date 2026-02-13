@@ -1,11 +1,44 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Patient, Diagnosis } from "../../types";
+import { Patient, Diagnosis, Entry } from "../../types";
 import { Typography } from "@mui/material";
 import FemaleSharpIcon from "@mui/icons-material/FemaleSharp";
 import MaleSharpIcon from "@mui/icons-material/MaleSharp";
 
 import patientService from "../../services/patients";
+
+import HealthCheckEntry from "../Entries/HealthCheckEntry";
+import HospitalEntry from "../Entries/HospitalEntry";
+import OccupationalHealthcareEntry from "../Entries/OccupationalHealthcareEntry";
+
+/**
+ * Helper function for exhaustive type checking
+ */
+const assertNever = (value: never): never => {
+  throw new Error(
+    `Unhandled discriminated union member: ${JSON.stringify(value)}`,
+  );
+};
+
+interface EntryProps {
+  entry: Entry;
+  diagnoses: Diagnosis[];
+}
+
+const EntryDetails = ({ entry, diagnoses }: EntryProps) => {
+  switch (entry.type) {
+    case "Hospital":
+      return <HospitalEntry entry={entry} diagnoses={diagnoses} />;
+    case "OccupationalHealthcare":
+      return (
+        <OccupationalHealthcareEntry entry={entry} diagnoses={diagnoses} />
+      );
+    case "HealthCheck":
+      return <HealthCheckEntry entry={entry} diagnoses={diagnoses} />;
+    default:
+      return assertNever(entry);
+  }
+};
 
 interface Props {
   diagnoses: Diagnosis[];
@@ -64,17 +97,7 @@ const PatientInfoPage = ({ diagnoses }: Props) => {
       </Typography>
       {patient.entries.map((e) => (
         <div key={e.id}>
-          <div>
-            {e.date}&nbsp;<i>{e.description}</i>
-          </div>
-          <ul>
-            {e.diagnosisCodes?.map((c) => (
-              <li key={c}>
-                {c}&nbsp;
-                {diagnoses.find((d) => d.code === c)?.name}
-              </li>
-            ))}
-          </ul>
+          <EntryDetails entry={e} diagnoses={diagnoses} />
         </div>
       ))}
     </div>
