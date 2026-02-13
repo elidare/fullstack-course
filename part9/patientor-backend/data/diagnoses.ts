@@ -76,6 +76,6 @@ const diagnosesEntries: DiagnosisEntry[] = [
     name: "Other proliferative retinopathy",
     latin: "Alia retinopathia proliferativa",
   },
-];
+] as const;
 
 export default diagnosesEntries;
