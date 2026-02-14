@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Patient, Diagnosis, Entry } from "../../types";
-import { Typography } from "@mui/material";
+import { Patient, Diagnosis, Entry, EntryWithoutId } from "../../types";
+import { Typography, Button } from "@mui/material";
 import FemaleSharpIcon from "@mui/icons-material/FemaleSharp";
 import MaleSharpIcon from "@mui/icons-material/MaleSharp";
 
@@ -10,6 +10,7 @@ import patientService from "../../services/patients";
 import HealthCheckEntry from "../Entries/HealthCheckEntry";
 import HospitalEntry from "../Entries/HospitalEntry";
 import OccupationalHealthcareEntry from "../Entries/OccupationalHealthcareEntry";
+import NewEntryForm from "../Entries/NewEntryForm";
 
 /**
  * Helper function for exhaustive type checking
@@ -47,6 +48,7 @@ interface Props {
 const PatientInfoPage = ({ diagnoses }: Props) => {
   const { id } = useParams();
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [entryFormShown, setEntryFormShown] = useState<Boolean>(false);
 
   useEffect(() => {
     const fetchPatient = async (id: string) => {
@@ -58,6 +60,11 @@ const PatientInfoPage = ({ diagnoses }: Props) => {
       void fetchPatient(id);
     }
   }, [id]);
+
+  const addNewEntry = (entry: EntryWithoutId) => {
+    // send to server
+    console.log(entry);
+  };
 
   if (!patient) {
     return <div>Sorry, no such patient exists</div>;
@@ -95,6 +102,22 @@ const PatientInfoPage = ({ diagnoses }: Props) => {
       >
         Entries
       </Typography>
+      {entryFormShown && (
+        <NewEntryForm
+          diagnoses={diagnoses}
+          onSubmit={addNewEntry}
+          onCancel={() => setEntryFormShown(false)}
+        />
+      )}
+      {!entryFormShown && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setEntryFormShown(true)}
+        >
+          Add new Entry
+        </Button>
+      )}
       {patient.entries.map((e) => (
         <div key={e.id}>
           <EntryDetails entry={e} diagnoses={diagnoses} />

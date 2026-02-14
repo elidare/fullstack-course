@@ -4,6 +4,7 @@ interface Props {
   entry: OccupationalHealthcareEntry;
   diagnoses: Diagnosis[];
 }
+
 const OccupationalHealthcareEntry = ({ entry, diagnoses }: Props) => {
   return (
     <div className="entry-block">

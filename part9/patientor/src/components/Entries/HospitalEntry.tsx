@@ -4,6 +4,7 @@ interface Props {
   entry: HospitalEntry;
   diagnoses: Diagnosis[];
 }
+
 const HospitalEntry = ({ entry, diagnoses }: Props) => {
   return (
     <div className="entry-block">
