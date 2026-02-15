@@ -9,12 +9,15 @@ import {
 import {
   InputLabel,
   Select,
+  OutlinedInput,
   MenuItem,
   Grid,
   Button,
   TextField,
   SelectChangeEvent,
   Alert,
+  Box,
+  Chip,
 } from "@mui/material";
 import { assertNever } from "../../utils";
 
@@ -117,14 +120,13 @@ const EntryExtension = ({
         <>
           <InputLabel style={{ marginTop: 20 }}>Discharge date</InputLabel>
           <TextField
-            label="Discharge date"
+            type="date"
             fullWidth
             value={dischargeDate}
             onChange={({ target }) => setDischargeDate(target.value)}
           />
+          <InputLabel style={{ marginTop: 20 }}>Discharge criteria</InputLabel>
           <TextField
-            style={{ marginTop: 20 }}
-            label="Discharge criteria"
             fullWidth
             value={dischargeCriteria}
             onChange={({ target }) => setDischargeCriteria(target.value)}
@@ -135,9 +137,8 @@ const EntryExtension = ({
     case EntryType.OccupationalHealthcare:
       content = (
         <>
+          <InputLabel style={{ marginTop: 20 }}>Employer name</InputLabel>
           <TextField
-            style={{ marginTop: 20 }}
-            label="Employer name"
             fullWidth
             value={employerName}
             onChange={({ target }) => setEmployerName(target.value)}
@@ -146,14 +147,14 @@ const EntryExtension = ({
             Sick leave start date
           </InputLabel>
           <TextField
-            label="Sick leave start date"
+            type="date"
             fullWidth
             value={sickLeaveStartDate}
             onChange={({ target }) => setSickLeaveStartDate(target.value)}
           />
           <InputLabel style={{ marginTop: 20 }}>Sick leave end date</InputLabel>
           <TextField
-            label="Sick leave end date"
+            type="date"
             fullWidth
             value={sickLeaveEndDate}
             onChange={({ target }) => setSickLeaveEndDate(target.value)}
@@ -178,7 +179,8 @@ const NewEntryForm = ({
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [specialist, setSpecialist] = useState<string>("");
-  // Todo Diagnoses codes
+  // Diagnoses codes
+  const [selectedDiagnoses, setSelectedDiagnoses] = useState<string[]>([]);
 
   // HealthCheck
   const [healthCheckRating, setHealthCheckRating] = useState<HealthCheckRating>(
@@ -207,6 +209,18 @@ const NewEntryForm = ({
     }
   };
 
+  const onSelectedDiagnosesChange = (
+    event: SelectChangeEvent<typeof selectedDiagnoses>,
+  ) => {
+    const {
+      target: { value },
+    } = event;
+    setSelectedDiagnoses(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value,
+    );
+  };
+
   const addEntry = (event: SyntheticEvent) => {
     event.preventDefault();
 
@@ -219,6 +233,7 @@ const NewEntryForm = ({
           date,
           specialist,
           type: entryType,
+          diagnosisCodes: selectedDiagnoses,
           healthCheckRating,
         };
         break;
@@ -228,6 +243,7 @@ const NewEntryForm = ({
           date,
           specialist,
           type: entryType,
+          diagnosisCodes: selectedDiagnoses,
           discharge: {
             date: dischargeDate,
             criteria: dischargeCriteria,
@@ -240,6 +256,7 @@ const NewEntryForm = ({
           date,
           specialist,
           type: entryType,
+          diagnosisCodes: selectedDiagnoses,
           employerName,
           ...(sickLeaveStartDate !== "" && sickLeaveEndDate !== ""
             ? {
@@ -276,27 +293,45 @@ const NewEntryForm = ({
               </MenuItem>
             ))}
           </Select>
+          <InputLabel style={{ marginTop: 20 }}>Description</InputLabel>
           <TextField
-            style={{ marginTop: 20 }}
-            label="Description"
             fullWidth
             value={description}
             onChange={({ target }) => setDescription(target.value)}
           />
           <InputLabel style={{ marginTop: 20 }}>Date</InputLabel>
           <TextField
-            label="Date"
+            type="date"
             fullWidth
             value={date}
             onChange={({ target }) => setDate(target.value)}
           />
+          <InputLabel style={{ marginTop: 20 }}>Specialist</InputLabel>
           <TextField
-            style={{ marginTop: 20 }}
-            label="Specialist"
             fullWidth
             value={specialist}
             onChange={({ target }) => setSpecialist(target.value)}
           />
+          <InputLabel style={{ marginTop: 20 }}>Diagnoses</InputLabel>
+          <Select
+            multiple
+            fullWidth
+            value={selectedDiagnoses}
+            onChange={onSelectedDiagnosesChange}
+            renderValue={(selected) => (
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} />
+                ))}
+              </Box>
+            )}
+          >
+            {diagnoses.map((d) => (
+              <MenuItem key={d.code} value={d.code}>
+                {d.code}:&nbsp;{d.name}
+              </MenuItem>
+            ))}
+          </Select>
           <EntryExtension
             entryType={entryType}
             healthCheckRating={healthCheckRating}

@@ -24,7 +24,6 @@ const OccupationalHealthcareEntry = ({ entry, diagnoses }: Props) => {
           ))}
         </ul>
       )}
-      <br />
       {entry.sickLeave &&
         `Sick leave: from ${entry.sickLeave?.startDate} to ${entry.sickLeave?.endDate}`}
     </div>
