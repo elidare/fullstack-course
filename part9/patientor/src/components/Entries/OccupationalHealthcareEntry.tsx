@@ -13,6 +13,7 @@ const OccupationalHealthcareEntry = ({ entry, diagnoses }: Props) => {
       <i>{entry.description}</i>
       <br />
       diagnose by {entry.specialist}
+      <br />
       {entry.diagnosisCodes && (
         <ul>
           {entry.diagnosisCodes?.map((c) => (
@@ -23,6 +24,7 @@ const OccupationalHealthcareEntry = ({ entry, diagnoses }: Props) => {
           ))}
         </ul>
       )}
+      <br />
       {entry.sickLeave &&
         `Sick leave: from ${entry.sickLeave?.startDate} to ${entry.sickLeave?.endDate}`}
     </div>

@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Patient, Diagnosis, Entry, EntryWithoutId } from "../../types";
+import {
+  Patient,
+  Diagnosis,
+  Entry,
+  EntryWithoutId,
+  EntryType,
+} from "../../types";
 import { Typography, Button } from "@mui/material";
 import FemaleSharpIcon from "@mui/icons-material/FemaleSharp";
 import MaleSharpIcon from "@mui/icons-material/MaleSharp";
@@ -12,14 +18,7 @@ import HospitalEntry from "../Entries/HospitalEntry";
 import OccupationalHealthcareEntry from "../Entries/OccupationalHealthcareEntry";
 import NewEntryForm from "../Entries/NewEntryForm";
 
-/**
- * Helper function for exhaustive type checking
- */
-const assertNever = (value: never): never => {
-  throw new Error(
-    `Unhandled discriminated union member: ${JSON.stringify(value)}`,
-  );
-};
+import { assertNever } from "../../utils";
 
 interface EntryProps {
   entry: Entry;
@@ -28,13 +27,13 @@ interface EntryProps {
 
 const EntryDetails = ({ entry, diagnoses }: EntryProps) => {
   switch (entry.type) {
-    case "Hospital":
+    case EntryType.Hospital:
       return <HospitalEntry entry={entry} diagnoses={diagnoses} />;
-    case "OccupationalHealthcare":
+    case EntryType.OccupationalHealthcare:
       return (
         <OccupationalHealthcareEntry entry={entry} diagnoses={diagnoses} />
       );
-    case "HealthCheck":
+    case EntryType.HealthCheck:
       return <HealthCheckEntry entry={entry} diagnoses={diagnoses} />;
     default:
       return assertNever(entry);
@@ -49,6 +48,7 @@ const PatientInfoPage = ({ diagnoses }: Props) => {
   const { id } = useParams();
   const [patient, setPatient] = useState<Patient | null>(null);
   const [entryFormShown, setEntryFormShown] = useState<Boolean>(false);
+  const [notification, setNotification] = useState("");
 
   useEffect(() => {
     const fetchPatient = async (id: string) => {
@@ -61,9 +61,31 @@ const PatientInfoPage = ({ diagnoses }: Props) => {
     }
   }, [id]);
 
-  const addNewEntry = (entry: EntryWithoutId) => {
-    // send to server
-    console.log(entry);
+  const addNewEntry = async (newEntry: EntryWithoutId) => {
+    if (!id) {
+      return;
+    }
+
+    try {
+      const savedEntry = await patientService.addEntry(id, newEntry);
+      setPatient((prev) => {
+        if (!prev) return prev;
+
+        return {
+          ...prev,
+          entries: prev.entries.concat(savedEntry),
+        };
+      });
+
+      setEntryFormShown(false);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setNotification(error.message);
+        setTimeout(() => {
+          setNotification("");
+        }, 5000);
+      }
+    }
   };
 
   if (!patient) {
@@ -107,6 +129,7 @@ const PatientInfoPage = ({ diagnoses }: Props) => {
           diagnoses={diagnoses}
           onSubmit={addNewEntry}
           onCancel={() => setEntryFormShown(false)}
+          notification={notification}
         />
       )}
       {!entryFormShown && (

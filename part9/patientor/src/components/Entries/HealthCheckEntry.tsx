@@ -14,6 +14,7 @@ const HealthCheckEntry = ({ entry, diagnoses }: Props) => {
       Health risk level: {entry.healthCheckRating}
       <br />
       diagnose by {entry.specialist}
+      <br />
       {entry.diagnosisCodes && (
         <ul>
           {entry.diagnosisCodes?.map((c) => (

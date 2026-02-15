@@ -14,6 +14,7 @@ import {
   Button,
   TextField,
   SelectChangeEvent,
+  Alert,
 } from "@mui/material";
 import { assertNever } from "../../utils";
 
@@ -35,6 +36,7 @@ interface ExtensionProps {
 
 interface Props {
   diagnoses: Diagnosis[];
+  notification: string;
   onSubmit: (values: EntryWithoutId) => void;
   onCancel: () => void;
 }
@@ -166,7 +168,12 @@ const EntryExtension = ({
   return content;
 };
 
-const NewEntryForm = ({ diagnoses, onSubmit, onCancel }: Props) => {
+const NewEntryForm = ({
+  diagnoses,
+  notification,
+  onSubmit,
+  onCancel,
+}: Props) => {
   const [entryType, setEntryType] = useState<EntryType>(EntryType.HealthCheck);
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState<string>("");
@@ -203,85 +210,131 @@ const NewEntryForm = ({ diagnoses, onSubmit, onCancel }: Props) => {
   const addEntry = (event: SyntheticEvent) => {
     event.preventDefault();
 
-    const newEntry = {};
+    let newEntry: EntryWithoutId;
+
+    switch (entryType) {
+      case EntryType.HealthCheck:
+        newEntry = {
+          description,
+          date,
+          specialist,
+          type: entryType,
+          healthCheckRating,
+        };
+        break;
+      case EntryType.Hospital:
+        newEntry = {
+          description,
+          date,
+          specialist,
+          type: entryType,
+          discharge: {
+            date: dischargeDate,
+            criteria: dischargeCriteria,
+          },
+        };
+        break;
+      case EntryType.OccupationalHealthcare:
+        newEntry = {
+          description,
+          date,
+          specialist,
+          type: entryType,
+          employerName,
+          ...(sickLeaveStartDate !== "" && sickLeaveEndDate !== ""
+            ? {
+                sickLeave: {
+                  startDate: sickLeaveStartDate,
+                  endDate: sickLeaveEndDate,
+                },
+              }
+            : {}),
+        };
+        break;
+      default:
+        return assertNever(entryType);
+    }
+
     onSubmit(newEntry);
-    console.log();
   };
 
   return (
-    <div className="entry-form">
-      <form onSubmit={addEntry}>
-        <InputLabel style={{ marginTop: 20 }}>Entry type</InputLabel>
-        <Select
-          label="Entry type"
-          fullWidth
-          value={entryType}
-          onChange={onEntryTypeChange}
-        >
-          {entryTypeOptions.map((option) => (
-            <MenuItem key={option.label} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-        <TextField
-          style={{ marginTop: 20 }}
-          label="Description"
-          fullWidth
-          value={description}
-          onChange={({ target }) => setDescription(target.value)}
-        />
-        <InputLabel style={{ marginTop: 20 }}>Date</InputLabel>
-        <TextField
-          label="Date"
-          fullWidth
-          value={date}
-          onChange={({ target }) => setDate(target.value)}
-        />
-        <TextField
-          style={{ marginTop: 20 }}
-          label="Specialist"
-          fullWidth
-          value={specialist}
-          onChange={({ target }) => setSpecialist(target.value)}
-        />
-        <EntryExtension
-          entryType={entryType}
-          healthCheckRating={healthCheckRating}
-          setHealthCheckRating={setHealthCheckRating}
-          dischargeDate={dischargeDate}
-          setDischargeDate={setDischargeDate}
-          dischargeCriteria={dischargeCriteria}
-          setDischargeCriteria={setDischargeCriteria}
-          employerName={employerName}
-          setEmployerName={setEmployerName}
-          sickLeaveStartDate={sickLeaveStartDate}
-          setSickLeaveStartDate={setSickLeaveStartDate}
-          sickLeaveEndDate={sickLeaveEndDate}
-          setSickLeaveEndDate={setSickLeaveEndDate}
-        />
-        <Grid style={{ display: "flex", marginTop: "16px" }}>
-          <Button
-            color="secondary"
-            variant="contained"
-            style={{ marginRight: "auto" }}
-            type="button"
-            onClick={onCancel}
+    <>
+      {notification && <Alert severity="error">{notification}</Alert>}
+      <div className="entry-form">
+        <form onSubmit={addEntry}>
+          <InputLabel style={{ marginTop: 20 }}>Entry type</InputLabel>
+          <Select
+            label="Entry type"
+            fullWidth
+            value={entryType}
+            onChange={onEntryTypeChange}
           >
-            Cancel
-          </Button>
-          <Button
-            style={{
-              marginLeft: "auto",
-            }}
-            type="submit"
-            variant="contained"
-          >
-            Add
-          </Button>
-        </Grid>
-      </form>
-    </div>
+            {entryTypeOptions.map((option) => (
+              <MenuItem key={option.label} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+          <TextField
+            style={{ marginTop: 20 }}
+            label="Description"
+            fullWidth
+            value={description}
+            onChange={({ target }) => setDescription(target.value)}
+          />
+          <InputLabel style={{ marginTop: 20 }}>Date</InputLabel>
+          <TextField
+            label="Date"
+            fullWidth
+            value={date}
+            onChange={({ target }) => setDate(target.value)}
+          />
+          <TextField
+            style={{ marginTop: 20 }}
+            label="Specialist"
+            fullWidth
+            value={specialist}
+            onChange={({ target }) => setSpecialist(target.value)}
+          />
+          <EntryExtension
+            entryType={entryType}
+            healthCheckRating={healthCheckRating}
+            setHealthCheckRating={setHealthCheckRating}
+            dischargeDate={dischargeDate}
+            setDischargeDate={setDischargeDate}
+            dischargeCriteria={dischargeCriteria}
+            setDischargeCriteria={setDischargeCriteria}
+            employerName={employerName}
+            setEmployerName={setEmployerName}
+            sickLeaveStartDate={sickLeaveStartDate}
+            setSickLeaveStartDate={setSickLeaveStartDate}
+            sickLeaveEndDate={sickLeaveEndDate}
+            setSickLeaveEndDate={setSickLeaveEndDate}
+          />
+          <Grid style={{ display: "flex", marginTop: "16px" }}>
+            <Button
+              color="secondary"
+              variant="contained"
+              style={{ marginRight: "auto" }}
+              type="button"
+              onClick={onCancel}
+            >
+              Cancel
+            </Button>
+            <Button
+              style={{
+                marginLeft: "auto",
+              }}
+              type="submit"
+              variant="contained"
+            >
+              Add
+            </Button>
+          </Grid>
+        </form>
+      </div>
+    </>
   );
 };
 

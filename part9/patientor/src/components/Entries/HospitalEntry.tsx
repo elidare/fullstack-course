@@ -12,6 +12,7 @@ const HospitalEntry = ({ entry, diagnoses }: Props) => {
       <i>{entry.description}</i>
       <br />
       diagnose by {entry.specialist}
+      <br />
       {entry.diagnosisCodes && (
         <ul>
           {entry.diagnosisCodes?.map((c) => (
@@ -22,6 +23,7 @@ const HospitalEntry = ({ entry, diagnoses }: Props) => {
           ))}
         </ul>
       )}
+      <br />
       Discharge: {entry.discharge.date} <i>{entry.discharge.criteria}</i>
     </div>
   );
